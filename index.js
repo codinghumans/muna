@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 const yargs = require('yargs/yargs');
 
-const init = require('./src/commands/init');
+const commit = require('./src/commands/commit');
 const encrypt = require('./src/commands/encrypt');
 const decrypt = require('./src/commands/decrypt');
+const init = require('./src/commands/init');
+const push = require('./src/commands/push');
 
 const argv = require('yargs/yargs')(process.argv.slice(2))
 	.scriptName('muna')
@@ -20,7 +22,7 @@ const argv = require('yargs/yargs')(process.argv.slice(2))
 		'TODO',
 		() => {},
 		async (argv) => {
-			await encrypt(argv.message);
+			await encrypt();
 		}
 	)
 	.command(
@@ -28,7 +30,23 @@ const argv = require('yargs/yargs')(process.argv.slice(2))
 		'TODO',
 		() => {},
 		async (argv) => {
-			await decrypt(argv.message);
+			await decrypt();
+		}
+	)
+	.command(
+		'commit <message>',
+		'TODO',
+		() => {},
+		async (argv) => {
+			await commit(argv.message);
+		}
+	)
+	.command(
+		'push',
+		'TODO',
+		() => {},
+		async (argv) => {
+			await push();
 		}
 	)
 	.help().argv;

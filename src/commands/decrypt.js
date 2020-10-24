@@ -16,7 +16,7 @@ module.exports = function decrypt() {
 	});
 };
 
-function decryptFile(file, key, iv) {
+const decryptFile = (file, key, iv) => {
 	const decipher = crypto.createDecipheriv('AES-256-CBC', key, iv);
 
 	const input = fs.createReadStream(file);
@@ -27,4 +27,4 @@ function decryptFile(file, key, iv) {
 	console.log(`Decrypted ${chalk.gray(file)} -> ${chalk.green(output.path)}`);
 
 	return output.path;
-}
+};

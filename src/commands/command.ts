@@ -1,6 +1,5 @@
-export interface CommandOptions {
-}
+export interface CommandOptions {}
 
 export interface Command {
-    execute(options?: CommandOptions): void;
+  execute(options?: CommandOptions): void;
 }

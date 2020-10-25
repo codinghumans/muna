@@ -1,26 +1,26 @@
 export class MasterKey {
-    #iv: Buffer;
-    #key: Buffer;  
-    
-    static parse(masterKey: string) : MasterKey {
-        const parts = masterKey.split("-");
-        return new MasterKey(parts[0], parts[1]);
-    }
+  #iv: Buffer;
+  #key: Buffer;
 
-    constructor(iv: string | Buffer, key: string | Buffer) {
-        this.#iv = (iv instanceof Buffer) ? iv : Buffer.from(iv as string, 'hex');
-        this.#key = (key instanceof Buffer) ? key : Buffer.from(key as string, 'hex');
-    }
+  static parse(masterKey: string): MasterKey {
+    const parts = masterKey.split('-');
+    return new MasterKey(parts[0], parts[1]);
+  }
 
-    get iv() : Buffer {
-        return this.#iv;
-    }
+  constructor(iv: string | Buffer, key: string | Buffer) {
+    this.#iv = iv instanceof Buffer ? iv : Buffer.from(iv as string, 'hex');
+    this.#key = key instanceof Buffer ? key : Buffer.from(key as string, 'hex');
+  }
 
-    get key() : Buffer {
-        return this.#key;
-    }
+  get iv(): Buffer {
+    return this.#iv;
+  }
 
-    toString(): string {
-        return `${this.iv}-${this.key}`;
-    }
+  get key(): Buffer {
+    return this.#key;
+  }
+
+  toString(): string {
+    return `${this.iv}-${this.key}`;
+  }
 }

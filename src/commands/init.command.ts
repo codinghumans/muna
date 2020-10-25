@@ -7,11 +7,11 @@ import { InitializationError } from '../lib/exceptions/initialization-error';
 
 export class InitCommand implements Command {
 	execute(): void {
+		console.log('Initializing Muna...');
+		
 		if (!Git.exists()) {
 			throw new InitializationError('Not in a git repository.');
 		}
-
-		console.log('Initializing Muna...');
 
 		Configfile.init();
 		Gitignore.init();

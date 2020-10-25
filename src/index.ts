@@ -5,7 +5,7 @@ import yargs = require('yargs/yargs');
 import { CommitCommand } from './commands/commit.command';
 import { DecryptCommand } from './commands/decrypt.command';
 import { EncryptCommand } from './commands/encrypt.command';
-import { init } from './commands/init';
+import { InitCommand } from './commands/init';
 import { push } from './commands/push';
 
 yargs(process.argv.slice(2))
@@ -15,7 +15,7 @@ yargs(process.argv.slice(2))
 		'TODO',
 		() => {},
 		async () => {
-			await init();
+			new InitCommand().execute();
 		}
 	)
 	.command(

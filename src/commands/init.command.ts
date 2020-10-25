@@ -1,11 +1,11 @@
-import chalk from "chalk";
-import fs from 'fs';
 import { Command } from "./command";
 import { DecryptCommand } from "./decrypt.command";
+import chalk from "chalk";
+import fs from 'fs';
 
 const gitignore = '.gitignore'
 
-export class EncryptCommand implements Command {
+export class InitCommand implements Command {
 
 	execute(): void {
 		if (!fs.existsSync(gitignore)) {
@@ -15,3 +15,4 @@ export class EncryptCommand implements Command {
 
 		new DecryptCommand().execute();
 	}
+}

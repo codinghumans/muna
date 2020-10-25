@@ -17,13 +17,16 @@ export class DecryptCommand implements Command {
 		}
 		else {
 			console.log('Switching to decrypted mode...');
+			
 		}
 
 		glob('**/*.enc', (_error, files) => {
 			files.map((file) => {
 				decrypt(file, key, iv);
-			});
+			});		
 		});
+
+		Lockfile.lock();
 	}
 }
 

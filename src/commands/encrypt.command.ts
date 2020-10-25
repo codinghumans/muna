@@ -19,6 +19,7 @@ export class EncryptCommand implements Command {
 		}
 		else {
 			console.log('Switching to encrypted mode...');
+			
 		}
 
 		const masterKey = new MasterKey(Buffer.from('c679c428b7957303fe95a9c7d909cb49', 'hex'), Buffer.from('1bc32f1091c8bda0920252e233388a2b8b1be03054a5250852cca74b3d12c4d5', 'hex'))

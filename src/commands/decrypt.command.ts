@@ -1,6 +1,9 @@
 import { Command } from './command';
+import { Configfile } from '../lib/configfile';
+import { ConfigurationError } from '../lib/exceptions/configuration-error';
 import { Lockfile } from '../lib/lockfile';
 import chalk from 'chalk';
+import { configfile } from '../lib/constants';
 import { decrypt } from '../lib/utils/file.utils';
 import { glob } from 'glob';
 
@@ -11,6 +14,10 @@ const iv = Buffer.from('c679c428b7957303fe95a9c7d909cb49', 'hex');
 export class DecryptCommand implements Command {
 
 	execute(): void {
+		if (!Configfile.exists()) {
+			throw new ConfigurationError(`${configfile} not found.`)
+		}
+
 		if (Lockfile.exists()) {
 			console.log('Files already decrypted. Skipping...');
 			return;

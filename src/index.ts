@@ -9,13 +9,21 @@ import { EncryptCommand } from './commands/encrypt.command';
 import { InitCommand } from './commands/init.command';
 import { push } from './commands/push';
 
+process.on('uncaughtException', function (error) {
+	console.error(chalk.red(error.message));
+	process.exit(1);
+});
+
 yargs(process.argv.slice(2))
 	.scriptName('muna')
+	.fail((message, error) => {
+		console.log(chalk.red(error.message));
+	})
 	.command(
 		'init',
 		'TODO',
 		() => {},
-		async () => {
+		() => {
 			new InitCommand().execute();
 		}
 	)
@@ -31,7 +39,7 @@ yargs(process.argv.slice(2))
 		'decrypt',
 		'TODO',
 		() => {},
-		async () => {
+		() => {
 			new DecryptCommand().execute();
 		}
 	)
@@ -39,7 +47,7 @@ yargs(process.argv.slice(2))
 		'commit <message>',
 		'TODO',
 		() => {},
-		async (argv: any) => {
+		(argv: any) => {
 			new CommitCommand().execute(argv.message);
 		}
 	)
@@ -51,8 +59,5 @@ yargs(process.argv.slice(2))
 			await push();
 		}
 	)
-	.fail((message, error) => {
-		console.log(chalk.red(error.message));
-	})
 	.help()
 	.argv;

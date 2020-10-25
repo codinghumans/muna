@@ -1,9 +1,8 @@
+import { Configfile, configfile } from '../lib/configfile';
+
 import { Command } from './command';
-import { Configfile } from '../lib/configfile';
 import { ConfigurationError } from '../lib/exceptions/configuration-error';
 import { Lockfile } from '../lib/lockfile';
-import chalk from 'chalk';
-import { configfile } from '../lib/constants';
 import { decrypt } from '../lib/utils/file.utils';
 import { glob } from 'glob';
 

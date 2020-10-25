@@ -1,6 +1,6 @@
 import fs from 'fs-extra';
 
-const lockfile = './.muna/muna.lock';
+export const lockfile = '.muna/muna.lock';
 
 export class Lockfile {
     static lock(): void {

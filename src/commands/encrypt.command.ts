@@ -1,13 +1,10 @@
 import { Command, CommandOptions } from './command';
+import { Configfile, configfile } from '../lib/configfile';
 import { digestSHA256, encrypt, unlink } from '../lib/utils/file.utils';
 
-import { Configfile } from '../lib/configfile';
 import { ConfigurationError } from '../lib/exceptions/configuration-error';
-import { Console } from 'console';
-import { LockNotFound } from '../lib/exceptions/lockfile-not-found';
 import { Lockfile } from '../lib/lockfile';
 import { MasterKey } from '../lib/master-key';
-import { configfile } from '../lib/constants';
 import glob from 'glob';
 import keytar from 'keytar';
 

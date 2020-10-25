@@ -1,7 +1,6 @@
 import { Command, CommandOptions } from './command';
 
-import chalk from 'chalk';
-import { commit } from '../lib/utils/git.utils';
+import { Git } from '../lib/git';
 import glob from 'glob';
 
 export interface CommitCommandOptions {
@@ -12,7 +11,7 @@ export class CommitCommand implements Command {
 
 	execute(options: CommitCommandOptions): void {
 		glob('**/*.enc', async (_error, files) => {
-			commit(files, options.message);
+			Git.commit(files, options.message);
 		});
 	}
 }

@@ -1,11 +1,12 @@
 #!/usr/bin/env node 
 
+import chalk = require('chalk');
 import yargs = require('yargs/yargs');
 
 import { CommitCommand } from './commands/commit.command';
 import { DecryptCommand } from './commands/decrypt.command';
 import { EncryptCommand } from './commands/encrypt.command';
-import { InitCommand } from './commands/init';
+import { InitCommand } from './commands/init.command';
 import { push } from './commands/push';
 
 yargs(process.argv.slice(2))
@@ -50,4 +51,8 @@ yargs(process.argv.slice(2))
 			await push();
 		}
 	)
-	.help().argv;
+	.fail((message, error) => {
+		console.log(chalk.red(error.message));
+	})
+	.help()
+	.argv;

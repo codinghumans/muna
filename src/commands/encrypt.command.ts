@@ -5,8 +5,6 @@ import { Console } from 'console';
 import { LockNotFound } from '../lib/exceptions/lockfile-not-found';
 import { Lockfile } from '../lib/lockfile';
 import { MasterKey } from '../lib/master-key';
-import chalk from 'chalk';
-import { error } from '../lib/utils/console.utils';
 import glob from 'glob';
 import keytar from 'keytar';
 

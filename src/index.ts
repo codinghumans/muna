@@ -4,6 +4,7 @@ import chalk = require('chalk');
 import yargs = require('yargs/yargs');
 
 import { CommitCommand } from './commands/commit.command';
+import { DiffCommand } from './commands/diff.command';
 import { EditCommand } from './commands/edit.command';
 import { InitCommand } from './commands/init.command';
 
@@ -34,6 +35,14 @@ yargs(process.argv.slice(2))
 		}
 	)
 	.command(
+		'diff',
+		'TODO',
+		() => {},
+		async (argv: any) => {
+			await new DiffCommand().execute();
+		}
+	)
+	.command(
 		'commit <message>',
 		'TODO',
 		() => {},
@@ -41,4 +50,5 @@ yargs(process.argv.slice(2))
 			await new CommitCommand().execute(argv);
 		}
 	)
+
 	.help().argv;

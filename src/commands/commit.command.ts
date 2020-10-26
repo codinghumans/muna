@@ -26,49 +26,15 @@ export class CommitCommand implements Command {
 
 		const files = await globby(['*/*.!(*enc)']);
 
-		this.diff(files);
-
 		if (this.changed(files)) {
-			let encryptedFiles = [] as string[];
+			let encryptedFiles = await this.encrypt(files);
 
-			if (await prompt('Do you want to encrypt this changes?', 'confirm')) {
-				encryptedFiles = await this.encrypt();
-			} else {
-				cancelPrompt();
-			}
+			this.stage(encryptedFiles);
 
-			if (await prompt('Do you want to stage this changes?', 'confirm')) {
-				this.stage(encryptedFiles);
-			} else {
-				cancelPrompt();
-			}
-
-			if (await prompt('Do you want to commit this changes?', 'confirm')) {
-				this.commit(encryptedFiles, options.message);
-			} else {
-				cancelPrompt();
-			}
+			this.commit(encryptedFiles, options.message);
 		} else {
 			console.log('Nothing to commit.');
 		}
-	}
-
-	private diff(files: string[]): void {
-		console.log('Generating git diff...');
-
-		console.log(separator());
-
-		files.forEach((file) => {
-			const originalFile = Project.getOriginalFile(file);
-
-			fs.ensureFileSync(originalFile);
-
-			console.log(chalk.cyan(`Found changes to "${file}"`));
-
-			Git.diff(originalFile, file);
-
-			console.log(separator());
-		});
 	}
 
 	private changed(files: string[]): boolean {
@@ -85,10 +51,8 @@ export class CommitCommand implements Command {
 		return hasChanges;
 	}
 
-	private async encrypt(): Promise<string[]> {
+	private async encrypt(files: string[]): Promise<string[]> {
 		const key = MasterKey.generate();
-
-		const files = await globby(['*/*.!(*enc)']);
 
 		const encryptedFiles = [];
 

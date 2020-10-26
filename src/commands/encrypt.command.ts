@@ -1,12 +1,15 @@
-import { Command, CommandOptions } from './command';
 import { Configfile, configfile } from '../lib/configfile';
-import { digestSHA256, encrypt, unlink } from '../lib/utils/file.utils';
+import { encrypt, unlink } from '../lib/utils/file.utils';
 
-import { ConfigurationError } from '../lib/exceptions/configuration-error';
+import { Command } from './command';
+import { ConfigurationError } from '../errors/configuration.error';
+import { DecryptCommand } from './decrypt.command';
+import { Keychain } from '../lib/keychain';
 import { Lockfile } from '../lib/lockfile';
 import { MasterKey } from '../lib/master-key';
+import fs from 'fs-extra';
 import glob from 'glob';
-import keytar from 'keytar';
+import chalk from 'chalk';
 
 export class EncryptCommand implements Command {
 	execute(): void {
@@ -14,28 +17,20 @@ export class EncryptCommand implements Command {
 			throw new ConfigurationError(`${configfile} not found.`);
 		}
 
-		if (!Lockfile.exists()) {
-			console.log('Files already encrypted. Skipping...');
-			return;
-		} else {
-			console.log('Switching to encrypted mode...');
-		}
+		const key = MasterKey.generate();
 
-		const masterKey = new MasterKey(
-			Buffer.from('c679c428b7957303fe95a9c7d909cb49', 'hex'),
-			Buffer.from('1bc32f1091c8bda0920252e233388a2b8b1be03054a5250852cca74b3d12c4d5', 'hex')
-		);
+		glob('*/*.!(*enc)', (_error, files) => {
+			console.log('Encrypting files...');
 
-		glob('**/*.!(*enc)', (_error, files) => {
-			const encryptedFiles = files.map((file) => {
-				return encrypt(file, masterKey.key, masterKey.iv);
+			files.map((file) => {
+				return encrypt(file, key);
 			});
 
-			keytar.setPassword('muna', digestSHA256(encryptedFiles), masterKey.toString());
+			Keychain.putMasterKey(key);
 
-			unlink(files);
-
-			Lockfile.unlock();
+			files.forEach(file => {
+				fs.unlinkSync(file);
+			}
 		});
 	}
 }

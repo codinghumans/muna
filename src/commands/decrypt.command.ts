@@ -1,33 +1,34 @@
 import { Configfile, configfile } from '../lib/configfile';
 
 import { Command } from './command';
-import { ConfigurationError } from '../lib/exceptions/configuration-error';
+import { ConfigurationError } from '../errors/configuration.error';
+import { Git } from '../lib/git';
+import { Keychain } from '../lib/keychain';
+import { KeychainError } from '../errors/keychain.error';
 import { Lockfile } from '../lib/lockfile';
+import { MasterKey } from '../lib/master-key';
+import { SSM } from '../lib/ssm';
 import { decrypt } from '../lib/utils/file.utils';
 import { glob } from 'glob';
 
-const key = Buffer.from('1bc32f1091c8bda0920252e233388a2b8b1be03054a5250852cca74b3d12c4d5', 'hex');
-const iv = Buffer.from('c679c428b7957303fe95a9c7d909cb49', 'hex');
-
 export class DecryptCommand implements Command {
-	execute(): void {
+	async execute(): Promise<void> {
 		if (!Configfile.exists()) {
 			throw new ConfigurationError(`${configfile} not found.`);
 		}
 
-		if (Lockfile.exists()) {
-			console.log('Files already decrypted. Skipping...');
-			return;
-		} else {
-			console.log('Switching to decrypted mode...');
+		const key = await MasterKey.fetch();
+
+		if (!key) {
+			throw new KeychainError('Master key not found.');
 		}
 
 		glob('**/*.enc', (_error, files) => {
+			console.log('Decrypting files...');
+
 			files.map((file) => {
-				decrypt(file, key, iv);
+				decrypt(file, key);
 			});
 		});
-
-		Lockfile.lock();
 	}
 }

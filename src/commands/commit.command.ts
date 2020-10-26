@@ -1,6 +1,8 @@
-import { Command, CommandOptions } from './command';
-
+import { Command } from './command';
 import { Git } from '../lib/git';
+import { Keychain } from '../lib/keychain';
+import { KeychainError } from '../errors/keychain.error';
+import { SSM } from '../lib/ssm';
 import glob from 'glob';
 
 export interface CommitCommandOptions {
@@ -8,9 +10,16 @@ export interface CommitCommandOptions {
 }
 
 export class CommitCommand implements Command {
-	execute(options: CommitCommandOptions): void {
-		glob('**/*.enc', async (_error, files) => {
+	async execute(options: CommitCommandOptions): Promise<void> {
+		const key = await Keychain.getMasterKey();
+
+		if (!key) {
+			throw new KeychainError("Master key not found. Please run 'muna encrypt --force' and try again.");
+		}
+
+		glob('**/*.enc', (_error, files) => {
 			Git.commit(files, options.message);
+			SSM.putMasterKey(Git.getLastCommitDate(), Git.getLastCommitHash(), key);
 		});
 	}
 }

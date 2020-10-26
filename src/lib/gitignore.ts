@@ -5,6 +5,7 @@ export const gitignore = '.gitignore';
 export const gitIgnoredFiles = '\n# Added by Muna\n.muna\n*.*\n!.gitignore\n!*.enc';
 
 export class Gitignore {
+	
 	static init(): void {
 		if (!Gitignore.exists()) {
 			fs.writeFileSync(gitignore, gitIgnoredFiles);

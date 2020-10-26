@@ -7,7 +7,6 @@ import { CommitCommand } from './commands/commit.command';
 import { DecryptCommand } from './commands/decrypt.command';
 import { EncryptCommand } from './commands/encrypt.command';
 import { InitCommand } from './commands/init.command';
-import { push } from './commands/push';
 
 process.on('uncaughtException', function (error) {
 	console.error(chalk.red(error.message));
@@ -47,16 +46,8 @@ yargs(process.argv.slice(2))
 		'commit <message>',
 		'TODO',
 		() => {},
-		(argv: any) => {
-			new CommitCommand().execute(argv.message);
-		}
-	)
-	.command(
-		'push',
-		'TODO',
-		() => {},
-		async () => {
-			await push();
+		async (argv: any) => {
+			await new CommitCommand().execute(argv.message);
 		}
 	)
 	.help().argv;

@@ -1,11 +1,5 @@
 import chalk from 'chalk';
-import { dir } from 'console';
 import { execSync } from 'child_process';
-import fs from 'fs-extra';
-import path from 'path';
-import { pathToFileURL } from 'url';
-
-const lockfile = './.muna/muna.lock';
 
 export class Git {
 	static exists(): boolean {
@@ -17,8 +11,16 @@ export class Git {
 		}
 	}
 
-	static getTopLevel(): string {
+	static getRootDirectory(): string {
 		return execSync(`git rev-parse --show-toplevel`).toString().trim();
+	}
+
+	static getLastCommitHash(): string {
+		return execSync('git rev-parse --short HEAD').toString().trim();
+	}
+
+	static getLastCommitDate(): string {
+		return execSync('git log -1 --date=short --pretty=format:%cd').toString().trim();
 	}
 
 	static commit(files: string[], message: string) {

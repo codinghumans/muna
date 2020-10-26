@@ -1,6 +1,6 @@
 import { Command } from './command';
 import { Configfile } from '../lib/configfile';
-import { DecryptCommand } from './decrypt.command';
+import { EditCommand } from './edit.command';
 import { Git } from '../lib/git';
 import { Gitignore } from '../lib/gitignore';
 import { InitializationError } from '../errors/initialization.error';
@@ -15,7 +15,5 @@ export class InitCommand implements Command {
 
 		Configfile.init();
 		Gitignore.init();
-
-		new DecryptCommand().execute();
 	}
 }

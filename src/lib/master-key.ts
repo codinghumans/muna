@@ -13,7 +13,7 @@ export class MasterKey {
 	}
 
 	static generate(): MasterKey {
-		console.log('Generating master key...');
+		console.log('Generating new master key...');
 		return new MasterKey(crypto.randomBytes(32), crypto.randomBytes(16));
 	}
 

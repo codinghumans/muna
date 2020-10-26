@@ -4,8 +4,7 @@ import chalk = require('chalk');
 import yargs = require('yargs/yargs');
 
 import { CommitCommand } from './commands/commit.command';
-import { DecryptCommand } from './commands/decrypt.command';
-import { EncryptCommand } from './commands/encrypt.command';
+import { EditCommand } from './commands/edit.command';
 import { InitCommand } from './commands/init.command';
 
 process.on('uncaughtException', function (error) {
@@ -15,8 +14,8 @@ process.on('uncaughtException', function (error) {
 
 yargs(process.argv.slice(2))
 	.scriptName('muna')
-	.fail((message, error) => {
-		console.log(chalk.red(error.message));
+	.fail((_message, error) => {
+		console.error(chalk.red(error.message));
 	})
 	.command(
 		'init',
@@ -27,19 +26,11 @@ yargs(process.argv.slice(2))
 		}
 	)
 	.command(
-		'encrypt',
+		'edit',
 		'TODO',
 		() => {},
 		() => {
-			new EncryptCommand().execute();
-		}
-	)
-	.command(
-		'decrypt',
-		'TODO',
-		() => {},
-		() => {
-			new DecryptCommand().execute();
+			new EditCommand().execute();
 		}
 	)
 	.command(
@@ -47,7 +38,7 @@ yargs(process.argv.slice(2))
 		'TODO',
 		() => {},
 		async (argv: any) => {
-			await new CommitCommand().execute(argv.message);
+			await new CommitCommand().execute(argv);
 		}
 	)
 	.help().argv;

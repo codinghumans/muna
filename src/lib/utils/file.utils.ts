@@ -1,8 +1,38 @@
+import { KeychainError } from '../../errors/keychain.error';
 import { MasterKey } from '../master-key';
 import chalk from 'chalk';
 import crypto from 'crypto';
 import fs from 'fs';
+import globby from 'globby';
 import rimraf from 'rimraf';
+
+export const encryptAll = async (): Promise<string[]> => {
+	const key = MasterKey.generate();
+
+	const files = await globby(['*/*.!(*enc)']);
+
+	files.map((file) => {
+		return encrypt(file, key);
+	});
+
+	return files;
+};
+
+export const decryptAll = async (): Promise<string[]> => {
+	const key = await MasterKey.fetch();
+
+	if (!key) {
+		throw new KeychainError('Master key not found.');
+	}
+
+	const files = await globby(['**/*.enc']);
+
+	files.map((file) => {
+		return decrypt(file, key);
+	});
+
+	return files;
+};
 
 export const encrypt = (file: string, key: MasterKey): string => {
 	const encipher = crypto.createCipheriv('AES-256-CBC', key.key, key.iv);

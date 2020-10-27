@@ -18,8 +18,6 @@ export const decrypt = async (file: string, key: MasterKey): Promise<string> => 
 
 	await new Promise((resolve) => input.pipe(decipher).pipe(output).on('finish', resolve));
 
-	console.log(`Decrypted ${chalk.gray(file)} -> ${chalk.green(output.path)}`);
-
 	fs.ensureDirSync(path.join(Project.getOriginalsDirectory(), path.dirname(output.path.toString())));
 	fs.copyFileSync(output.path, path.join(Project.getOriginalsDirectory(), output.path.toString()));
 
@@ -33,8 +31,6 @@ export const encrypt = async (file: string, key: MasterKey): Promise<string> => 
 	const output = fs.createWriteStream(`${file}.enc`);
 
 	await new Promise((resolve) => input.pipe(encipher).pipe(output).on('finish', resolve));
-
-	console.log(`Encrypted ${chalk.gray(file)} -> ${chalk.green(output.path)}`);
 
 	return output.path.toString();
 };

@@ -5,37 +5,35 @@ import { ConfigurationError } from '../errors/configuration.error';
 import { KeychainError } from '../errors/keychain.error';
 import { Lockfile } from '../lib/lockfile';
 import { MasterKey } from '../lib/master-key';
+import chalk from 'chalk';
 import { decrypt } from '../lib/utils/file.utils';
 import globby from 'globby';
 
-export class EditCommand implements Command {
+export class DecryptCommand implements Command {
 	async execute(): Promise<void> {
 		if (!Configfile.exists()) {
 			throw new ConfigurationError(`${configfile} not found.`);
 		}
 
-		await this.decryptAll();
+		const encryptedFiles = await globby(['**/*.enc']);
+
+		await this.decrypt(encryptedFiles);
 	}
 
-	private async decryptAll(): Promise<string[]> {
+	private async decrypt(encryptedFiles: string[]): Promise<void> {
 		const key = await MasterKey.fetch();
 
 		if (!key) {
 			throw new KeychainError('Master key not found.');
 		}
 
-		const files = await globby(['**/*.enc']);
-
-		if (files.length == 0) {
+		if (encryptedFiles.length == 0) {
 			console.log('No files to decrypt.');
 		}
 
-		const decryptedFiles = [];
-
-		for (let file of files) {
-			decryptedFiles.push(await decrypt(file, key));
+		for (let encryptedFile of encryptedFiles) {
+			const decryptedFile = await decrypt(encryptedFile, key);
+			console.log(`Decrypted ${chalk.gray(encryptedFile)} -> ${chalk.green(decryptedFile)}`);
 		}
-
-		return decryptedFiles;
 	}
 }

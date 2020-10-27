@@ -3,9 +3,10 @@
 import chalk = require('chalk');
 import yargs = require('yargs/yargs');
 
-import { CommitCommand } from './commands/commit.command';
+import { ApplyCommand } from './commands/apply.command';
+import { DecryptCommand } from './commands/decrypt.command';
 import { DiffCommand } from './commands/diff.command';
-import { EditCommand } from './commands/edit.command';
+import { EncryptCommand } from './commands/encrypt.command';
 import { InitCommand } from './commands/init.command';
 
 process.on('uncaughtException', function (error) {
@@ -27,14 +28,6 @@ yargs(process.argv.slice(2))
 		}
 	)
 	.command(
-		'edit',
-		'TODO',
-		() => {},
-		() => {
-			new EditCommand().execute();
-		}
-	)
-	.command(
 		'diff',
 		'TODO',
 		() => {},
@@ -43,11 +36,27 @@ yargs(process.argv.slice(2))
 		}
 	)
 	.command(
-		'commit <message>',
+		'decrypt',
+		'TODO',
+		() => {},
+		() => {
+			new DecryptCommand().execute();
+		}
+	)
+	.command(
+		'encrypt',
 		'TODO',
 		() => {},
 		async (argv: any) => {
-			await new CommitCommand().execute(argv);
+			await new EncryptCommand().execute();
+		}
+	)
+	.command(
+		'apply',
+		'TODO',
+		() => {},
+		async (argv: any) => {
+			await new ApplyCommand().execute();
 		}
 	)
 

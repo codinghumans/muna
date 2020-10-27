@@ -15,7 +15,13 @@ export class DiffCommand implements Command {
 			throw new ConfigurationError(`${configfile} not found.`);
 		}
 
-		this.diff(await globby(['*/*.!(*enc)']));
+		const files = await globby(['*/*.!(*enc)']);
+
+		if (Project.changed(files)) {
+			this.diff(files);
+		} else {
+			console.log('Nothing to diff.');
+		}
 	}
 
 	private diff(files: string[]): void {
@@ -24,11 +30,9 @@ export class DiffCommand implements Command {
 
 			fs.ensureFileSync(originalFile);
 
-			console.log(chalk.cyan(`# ${file}`));
-
-			Git.diff(originalFile, file);
-
-			console.log(separator());
+			if (Git.changed(originalFile, file)) {
+				Git.diff(originalFile, file);
+			}
 		});
 	}
 }

@@ -1,6 +1,6 @@
 import { Git } from './git';
+import fs from 'fs-extra';
 import path from 'path';
-import { sha256 } from './utils/crypto.utils';
 
 export class Project {
 	static getRootDirectory(): string {
@@ -17,5 +17,19 @@ export class Project {
 
 	static getOriginalFile(file: string): string {
 		return path.join(Project.getOriginalsDirectory(), file);
+	}
+
+	static changed(files: string[]): boolean {
+		let changed = false;
+
+		files.forEach((file) => {
+			const originalFile = Project.getOriginalFile(file);
+
+			fs.ensureFileSync(originalFile);
+
+			changed = changed || Git.changed(originalFile, file);
+		});
+
+		return changed;
 	}
 }

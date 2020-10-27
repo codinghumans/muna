@@ -18,8 +18,8 @@ export const decrypt = async (file: string, key: MasterKey): Promise<string> => 
 
 	await new Promise((resolve) => input.pipe(decipher).pipe(output).on('finish', resolve));
 
-	fs.ensureDirSync(path.join(Project.getOriginalsDirectory(), path.dirname(output.path.toString())));
-	fs.copyFileSync(output.path, path.join(Project.getOriginalsDirectory(), output.path.toString()));
+	fs.ensureDirSync(path.join(Project.getSnapshotDirectory(), path.dirname(output.path.toString())));
+	fs.copyFileSync(output.path, path.join(Project.getSnapshotDirectory(), output.path.toString()));
 
 	return output.path.toString();
 };

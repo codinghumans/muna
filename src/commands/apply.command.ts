@@ -1,6 +1,5 @@
 import { Configfile, configfile } from '../lib/configfile';
-import { cancelPrompt, prompt } from '../lib/utils/prompt.utils';
-import { decrypt, encrypt, unlink } from '../lib/utils/file.utils';
+import { encrypt, unlink } from '../lib/utils/file.utils';
 
 import { Command } from './command';
 import { ConfigurationError } from '../errors/configuration.error';
@@ -24,7 +23,9 @@ export class ApplyCommand implements Command {
 			throw new ConfigurationError(`${configfile} not found.`);
 		}
 
-		const encryptedFiles = await globby(['**/*.enc']);
+		const decryptedFiles = await globby(['*/*.!(*enc)']);
+
+		const encryptedFiles = await this.encrypt(decryptedFiles);
 
 		console.log('Staging...');
 		this.stage(encryptedFiles);
@@ -35,9 +36,24 @@ export class ApplyCommand implements Command {
 		console.log('Pushing...');
 		this.push();
 
-		for (let file of encryptedFiles) {
-			await decrypt(file, (await Keychain.getMasterKey()) as MasterKey);
+		unlink([Project.getSnapshotDirectory()]);
+		unlink(await globby(['*/*.!(*enc)']));
+	}
+
+	private async encrypt(decryptedFiles: string[]): Promise<string[]> {
+		const key = MasterKey.generate();
+
+		const encryptedFiles = [] as string[];
+
+		for (let decryptedFile of decryptedFiles) {
+			const encryptedFile = await encrypt(decryptedFile, key);
+			console.log(`Encrypted ${chalk.gray(decryptedFile)} -> ${chalk.green(encryptedFile)}`);
+			encryptedFiles.push(encryptedFile);
 		}
+
+		Keychain.putMasterKey(key);
+
+		return encryptedFiles;
 	}
 
 	private stage(files: string[]): void {

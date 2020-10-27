@@ -17,7 +17,7 @@ export class DiffCommand implements Command {
 
 		const files = await globby(['*/*.!(*enc)']);
 
-		if (Project.changed(files)) {
+		if (Project.didFilesChange(files)) {
 			this.diff(files);
 		} else {
 			console.log('Nothing to diff.');
@@ -26,12 +26,12 @@ export class DiffCommand implements Command {
 
 	private diff(files: string[]): void {
 		files.forEach((file) => {
-			const originalFile = Project.getOriginalFile(file);
+			const snapshot = Project.getSnapshot(file);
 
-			fs.ensureFileSync(originalFile);
+			fs.ensureFileSync(snapshot);
 
-			if (Git.changed(originalFile, file)) {
-				Git.diff(originalFile, file);
+			if (Git.didFileChange(snapshot, file)) {
+				Git.diff(snapshot, file);
 			}
 		});
 	}

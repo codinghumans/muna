@@ -46,7 +46,7 @@ export class Git {
 		execSync(`git push origin`, { stdio: 'inherit' });
 	}
 
-	static changed(file1: string, file2: string): boolean {
+	static didFileChange(file1: string, file2: string): boolean {
 		return fs.readFileSync(file1).toString() != fs.readFileSync(file2).toString();
 	}
 

@@ -1,13 +1,14 @@
 #!/usr/bin/env node
 
 import chalk = require('chalk');
-import yargs = require('yargs/yargs');
 
 import { ApplyCommand } from './commands/apply.command';
-import { DecryptCommand } from './commands/decrypt.command';
 import { DiffCommand } from './commands/diff.command';
-import { EncryptCommand } from './commands/encrypt.command';
+import { EditCommand } from './commands/edit.command';
 import { InitCommand } from './commands/init.command';
+import { help } from 'yargs';
+
+import yargs = require('yargs/yargs');
 
 process.on('uncaughtException', function (error) {
 	console.error(chalk.red(error.message));
@@ -16,12 +17,10 @@ process.on('uncaughtException', function (error) {
 
 yargs(process.argv.slice(2))
 	.scriptName('muna')
-	.fail((_message, error) => {
-		console.error(chalk.red(error.message));
-	})
+	.usage('Usage: $0 <command> [options]')
 	.command(
 		'init',
-		'TODO',
+		'Initializes a muna project.',
 		() => {},
 		() => {
 			new InitCommand().execute();
@@ -29,35 +28,38 @@ yargs(process.argv.slice(2))
 	)
 	.command(
 		'diff',
-		'TODO',
+		'Generates a git diff between the encrypted and non-encrypted versions of all the non-encrypted files included in the project.',
 		() => {},
 		async (argv: any) => {
 			await new DiffCommand().execute();
 		}
 	)
 	.command(
-		'decrypt',
-		'TODO',
+		'edit',
+		'Decrypts all the encrypted files and allows the user to edit them.',
 		() => {},
-		() => {
-			new DecryptCommand().execute();
+		async () => {
+			await new EditCommand().execute();
 		}
 	)
 	.command(
-		'encrypt',
-		'TODO',
-		() => {},
+		'apply -r <reason>',
+		'Encrypts, commits, and pushes to the remote git repository all the non-encrypted files included in the project. The master key is also automatically added to the SSM Parameter Store.',
+		(yargs) => {
+			return yargs
+				.group(['r'], "Options for 'apply':")
+				.option('reason', {
+					type: 'string',
+					alias: 'r',
+					describe: 'The reason of this change.',
+				})
+				.demandOption(['r']);
+		},
 		async (argv: any) => {
-			await new EncryptCommand().execute();
-		}
-	)
-	.command(
-		'apply',
-		'TODO',
-		() => {},
-		async (argv: any) => {
+			console.log(argv);
 			await new ApplyCommand().execute();
 		}
 	)
+	.demandCommand()
 
-	.help().argv;
+	.epilog('Copyright 2020, Coding Humans. All rights reserved.').argv;

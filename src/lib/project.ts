@@ -11,23 +11,23 @@ export class Project {
 		return path.join(Git.getRootDirectory(), '.muna');
 	}
 
-	static getOriginalsDirectory(): string {
-		return path.join(Project.getMetadataDirectory(), 'originals');
+	static getSnapshotDirectory(): string {
+		return path.join(Project.getMetadataDirectory(), 'snapshot');
 	}
 
-	static getOriginalFile(file: string): string {
-		return path.join(Project.getOriginalsDirectory(), file);
+	static getSnapshot(file: string): string {
+		return path.join(Project.getSnapshotDirectory(), file);
 	}
 
-	static changed(files: string[]): boolean {
+	static didFilesChange(files: string[]): boolean {
 		let changed = false;
 
 		files.forEach((file) => {
-			const originalFile = Project.getOriginalFile(file);
+			const snapshot = Project.getSnapshot(file);
 
-			fs.ensureFileSync(originalFile);
+			fs.ensureFileSync(snapshot);
 
-			changed = changed || Git.changed(originalFile, file);
+			changed = changed || Git.didFileChange(snapshot, file);
 		});
 
 		return changed;

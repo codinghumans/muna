@@ -1,21 +1,16 @@
-import { Configfile, configfile } from '../lib/configfile';
-
-import { Command } from './command';
 import { ConfigurationError } from '../errors/configuration.error';
-import { Git } from '../lib/git';
-import { Project } from '../lib/project';
-import chalk from 'chalk';
-import fs from 'fs-extra';
-import globby from 'globby';
-import { separator } from '../lib/utils/console.utils';
+import { Git } from '../services/git';
+import { ConfigFile, Project } from '../services/project';
+import { existsFile, touchFile } from '../utils/file.utils';
+import { Command } from './command';
 
 export class DiffCommand implements Command {
 	async execute(): Promise<void> {
-		if (!Configfile.exists()) {
-			throw new ConfigurationError(`${configfile} not found.`);
+		if (!existsFile(ConfigFile)) {
+			throw new ConfigurationError(`${ConfigFile} not found.`);
 		}
 
-		const files = await globby(['*/*.!(*enc)']);
+		const files = await Project.getDecryptedFilePaths();
 
 		if (Project.didFilesChange(files)) {
 			this.diff(files);
@@ -26,12 +21,12 @@ export class DiffCommand implements Command {
 
 	private diff(files: string[]): void {
 		files.forEach((file) => {
-			const snapshot = Project.getSnapshot(file);
+			const decriptedSnapshotFile = Project.getDecryptedSnapshotFilePath(file);
 
-			fs.ensureFileSync(snapshot);
+			touchFile(decriptedSnapshotFile);
 
-			if (Git.didFileChange(snapshot, file)) {
-				Git.diff(snapshot, file);
+			if (Git.didFileChange(decriptedSnapshotFile, file)) {
+				Git.diff(decriptedSnapshotFile, file);
 			}
 		});
 	}

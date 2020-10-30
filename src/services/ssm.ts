@@ -1,5 +1,5 @@
 import { Git } from './git';
-import { MasterKey } from './master-key';
+import { MasterKey } from '../lib/master-key';
 import { PutParameterRequest } from 'aws-sdk/clients/ssm';
 import aws from 'aws-sdk';
 import chalk from 'chalk';

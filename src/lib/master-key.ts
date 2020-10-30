@@ -1,6 +1,6 @@
-import { Git } from './git';
-import { Keychain } from './keychain';
-import { SSM } from './ssm';
+import { Git } from '../services/git';
+import { Keychain } from '../services/keychain';
+import { SSM } from '../services/ssm';
 import crypto from 'crypto';
 
 export class MasterKey {

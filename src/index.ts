@@ -6,9 +6,11 @@ import { ApplyCommand } from './commands/apply.command';
 import { DiffCommand } from './commands/diff.command';
 import { EditCommand } from './commands/edit.command';
 import { InitCommand } from './commands/init.command';
+import { exit } from 'process';
 import { help } from 'yargs';
 
 import yargs = require('yargs/yargs');
+
 
 process.on('uncaughtException', function (error) {
 	console.error(chalk.red(error.message));
@@ -43,10 +45,11 @@ yargs(process.argv.slice(2))
 		}
 	)
 	.command(
-		'apply -r <reason>',
+		'apply',
 		'Encrypts, commits, and pushes to the remote git repository all the non-encrypted files included in the project. The master key is also automatically added to the SSM Parameter Store.',
 		(yargs) => {
 			return yargs
+				.usage('$0 apply -r <reason>')
 				.group(['r'], "Options for 'apply':")
 				.option('reason', {
 					type: 'string',
@@ -56,10 +59,15 @@ yargs(process.argv.slice(2))
 				.demandOption(['r']);
 		},
 		async (argv: any) => {
-			console.log(argv);
 			await new ApplyCommand().execute();
 		}
 	)
-	.demandCommand()
-
-	.epilog('Copyright 2020, Coding Humans. All rights reserved.').argv;
+	.fail((message, error) => {
+		if (error) {
+			console.log(error.message);
+		}
+		process.exit(1);
+	})
+	.epilog('Copyright 2020, Coding Humans. All rights reserved.')
+	.help()
+	.version().argv;

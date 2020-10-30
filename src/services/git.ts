@@ -1,11 +1,7 @@
-import { Console } from 'console';
-import { Project } from './project';
 import chalk from 'chalk';
 import { execSync } from 'child_process';
 import fs from 'fs';
-import path from 'path';
-import { separator } from './utils/console.utils';
-import { string } from 'yargs';
+import { separator } from '../utils/console.utils';
 
 export class Git {
 	static exists(): boolean {
@@ -17,7 +13,7 @@ export class Git {
 		}
 	}
 
-	static getRootDirectory(): string {
+	static getAbsoluteRootFolderPath(): string {
 		return execSync(`git rev-parse --show-toplevel`).toString().trim();
 	}
 

@@ -1,17 +1,12 @@
-import { Configfile, configfile } from '../lib/configfile';
-import { encrypt, unlink } from '../lib/utils/file.utils';
-
-import { Command } from './command';
-import { ConfigurationError } from '../errors/configuration.error';
-import { Git } from '../lib/git';
-import { Keychain } from '../lib/keychain';
-import { MasterKey } from '../lib/master-key';
-import { Project } from '../lib/project';
-import { SSM } from '../lib/ssm';
 import chalk from 'chalk';
-import fs from 'fs-extra';
-import globby from 'globby';
-import { separator } from '../lib/utils/console.utils';
+import { MasterKey } from '../lib/master-key';
+import { Git } from '../services/git';
+import { Keychain } from '../services/keychain';
+import { Project } from '../services/project';
+import { SSM } from '../services/ssm';
+import { separator } from '../utils/console.utils';
+import { encryptFile } from '../utils/file.utils';
+import { Command } from './command';
 
 export interface CommitCommandOptions {
 	message: string;
@@ -19,11 +14,12 @@ export interface CommitCommandOptions {
 
 export class ApplyCommand implements Command {
 	async execute(): Promise<void> {
-		if (!Configfile.exists()) {
-			throw new ConfigurationError(`${configfile} not found.`);
-		}
+		const decryptedFiles = await Project.getDecryptedFilePaths();
 
-		const decryptedFiles = await globby(['*/*.!(*enc)']);
+		if (decryptedFiles.length == 0) {
+			console.log("Nothing to encrypt. If you have encrypted files, please run 'muna edit' first.");
+			return;
+		}
 
 		const encryptedFiles = await this.encrypt(decryptedFiles);
 
@@ -36,8 +32,10 @@ export class ApplyCommand implements Command {
 		console.log('Pushing...');
 		this.push();
 
-		unlink([Project.getSnapshotDirectory()]);
-		unlink(await globby(['*/*.!(*enc)']));
+		//remove(await Project.getIncludedFiles());
+		//remove([Project.getSnapshotDirectory()]);
+
+		return;
 	}
 
 	private async encrypt(decryptedFiles: string[]): Promise<string[]> {
@@ -46,7 +44,7 @@ export class ApplyCommand implements Command {
 		const encryptedFiles = [] as string[];
 
 		for (let decryptedFile of decryptedFiles) {
-			const encryptedFile = await encrypt(decryptedFile, key);
+			const encryptedFile = await encryptFile(decryptedFile, key);
 			console.log(`Encrypted ${chalk.gray(decryptedFile)} -> ${chalk.green(encryptedFile)}`);
 			encryptedFiles.push(encryptedFile);
 		}

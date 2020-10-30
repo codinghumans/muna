@@ -1,22 +1,22 @@
-import { Configfile, configfile } from '../lib/configfile';
-
-import { Command } from './command';
-import { ConfigurationError } from '../errors/configuration.error';
+import chalk from 'chalk';
+import path from 'path';
 import { KeychainError } from '../errors/keychain.error';
 import { MasterKey } from '../lib/master-key';
-import chalk from 'chalk';
-import { decrypt } from '../lib/utils/file.utils';
-import globby from 'globby';
+import { Project } from '../services/project';
+import { copyFile, decryptFile } from '../utils/file.utils';
+import { Command } from './command';
 
 export class EditCommand implements Command {
 	async execute(): Promise<void> {
-		if (!Configfile.exists()) {
-			throw new ConfigurationError(`${configfile} not found.`);
+		const encryptedFiles = await Project.getEncryptedFilePaths();
+
+		if (encryptedFiles.length == 0) {
+			console.log('Nothing to decrypt.');
+			return;
 		}
 
-		const encryptedFiles = await globby(['**/*.enc']);
-
 		await this.decrypt(encryptedFiles);
+		return;
 	}
 
 	private async decrypt(encryptedFiles: string[]): Promise<string[]> {
@@ -26,15 +26,20 @@ export class EditCommand implements Command {
 			throw new KeychainError('Master key not found.');
 		}
 
-		if (encryptedFiles.length == 0) {
-			console.log('No files to decrypt.');
-		}
-
 		const decryptedFiles = [] as string[];
 
 		for (let encryptedFile of encryptedFiles) {
-			const decryptedFile = await decrypt(encryptedFile, key);
+			const decryptedFile = await decryptFile(encryptedFile, key);
 			console.log(`Decrypted ${chalk.gray(encryptedFile)} -> ${chalk.green(decryptedFile)}`);
+
+			//path.join(Project.getDecryptedSnapshotFolder(), decryptedFile)
+			//touchFile()
+
+			copyFile(decryptedFile, path.join(Project.getDecryptedSnapshotFolderPath(), decryptedFile));
+
+			//fs.ensureDirSync(path.join(Project.getDecryptedSnapshotFolder(), path.dirname(output.path.toString())));
+			//fs.copyFileSync(output.path, path.join(Project.getDecryptedSnapshotFolder(), output.path.toString()));
+
 			decryptedFiles.push(decryptedFile);
 		}
 

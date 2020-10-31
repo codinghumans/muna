@@ -1,5 +1,5 @@
 export interface CommandOptions {}
 
-export interface Command {
+export default interface Command {
 	execute(options?: CommandOptions): void;
 }

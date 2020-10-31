@@ -1,5 +1,3 @@
-import { kMaxLength } from 'buffer';
-
 export const separator = (char: string = '-', length: number = 50) => {
 	let sep = '';
 

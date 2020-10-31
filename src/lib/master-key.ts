@@ -1,9 +1,9 @@
-import { Git } from '../services/git';
-import { Keychain } from '../services/keychain';
-import { SSM } from '../services/ssm';
 import crypto from 'crypto';
+import git from '../services/git';
+import keychain from '../services/keychain';
+import ssm from '../services/ssm';
 
-export class MasterKey {
+export default class MasterKey {
 	#key: Buffer;
 	#iv: Buffer;
 
@@ -20,13 +20,13 @@ export class MasterKey {
 	static async fetch(): Promise<MasterKey | null> {
 		console.log('Fetching master key...');
 
-		let key = await Keychain.getMasterKey();
+		let key = await keychain.getMasterKey();
 
 		if (key) {
 			console.log('Master key fetched from keychain.');
 			return key;
 		} else {
-			key = await SSM.getMasterKey(Git.getLastCommitDate(), Git.getLastCommitHash());
+			key = await ssm.getMasterKey(git.getLastCommitDate(), git.getLastCommitHash());
 		}
 
 		if (key) {

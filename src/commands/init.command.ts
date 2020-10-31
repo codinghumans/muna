@@ -1,10 +1,10 @@
 import chalk from 'chalk';
 import { InitializationError } from '../errors/initialization.error';
-import { Git } from '../services/git';
-import { ConfigFile, GitIgnoredFiles, GitIgnoreFile, Project } from '../services/project';
-import { appendToFile, existsFile, readFile, writeFile, writeJSONFile } from '../utils/file.utils';
-import { touchFolder } from '../utils/folder.utils';
-import { Command } from './command';
+import file from '../services/file';
+import folder from '../services/folder';
+import Git from '../services/git';
+import Project, { ConfigFile, GitIgnoredFiles, GitIgnoreFile } from '../services/project';
+import Command from './command';
 
 export class InitCommand implements Command {
 	execute(): void {
@@ -22,10 +22,10 @@ export class InitCommand implements Command {
 	private createExampleSecretsFile() {
 		const exampleSecretsFile = Project.getExampleSecretsFilePath();
 
-		if (!existsFile(exampleSecretsFile)) {
-			touchFolder(Project.getSecretsFolderPath());
+		if (!file.exists(exampleSecretsFile)) {
+			folder.touch(Project.getSecretsFolderPath());
 
-			writeJSONFile(exampleSecretsFile, {
+			file.writeJSON(exampleSecretsFile, {
 				mySecretName: 'mySecretValue',
 			});
 
@@ -36,8 +36,8 @@ export class InitCommand implements Command {
 	}
 
 	private createConfigFile() {
-		if (!existsFile(ConfigFile)) {
-			writeFile(ConfigFile, JSON.stringify({}, null, 2));
+		if (!file.exists(ConfigFile)) {
+			file.writeJSON(ConfigFile, {});
 			console.log(`Created ${chalk.green(ConfigFile)}`);
 		} else {
 			console.log(`Skipped ${chalk.gray(ConfigFile)}`);
@@ -45,11 +45,11 @@ export class InitCommand implements Command {
 	}
 
 	private createGitIgnoreFile() {
-		if (!existsFile(GitIgnoreFile)) {
-			writeFile(GitIgnoreFile, GitIgnoredFiles);
+		if (!file.exists(GitIgnoreFile)) {
+			file.write(GitIgnoreFile, GitIgnoredFiles);
 			console.log(`Created ${chalk.green(GitIgnoreFile)}`);
-		} else if (!readFile(GitIgnoreFile).toString().includes(GitIgnoredFiles)) {
-			appendToFile(GitIgnoreFile, GitIgnoredFiles);
+		} else if (!file.read(GitIgnoreFile).toString().includes(GitIgnoredFiles)) {
+			file.append(GitIgnoreFile, GitIgnoredFiles);
 			console.log(`Updated ${chalk.green(GitIgnoreFile)}`);
 		} else {
 			console.log(`Skipped ${chalk.gray(GitIgnoreFile)}`);

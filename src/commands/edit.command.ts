@@ -1,14 +1,15 @@
 import chalk from 'chalk';
 import path from 'path';
 import { KeychainError } from '../errors/keychain.error';
-import { MasterKey } from '../lib/master-key';
-import { Project } from '../services/project';
-import { copyFile, decryptFile } from '../utils/file.utils';
-import { Command } from './command';
+import MasterKey from '../lib/master-key';
+import file from '../services/file';
+import folder from '../services/folder';
+import project from '../services/project';
+import Command from './command';
 
 export class EditCommand implements Command {
 	async execute(): Promise<void> {
-		const encryptedFiles = await Project.getEncryptedFilePaths();
+		const encryptedFiles = await project.getEncryptedFilePaths();
 
 		if (encryptedFiles.length == 0) {
 			console.log('Nothing to decrypt.');
@@ -29,20 +30,19 @@ export class EditCommand implements Command {
 		const decryptedFiles = [] as string[];
 
 		for (let encryptedFile of encryptedFiles) {
-			const decryptedFile = await decryptFile(encryptedFile, key);
+			const decryptedFile = await file.decrypt(encryptedFile, key);
 			console.log(`Decrypted ${chalk.gray(encryptedFile)} -> ${chalk.green(decryptedFile)}`);
 
-			//path.join(Project.getDecryptedSnapshotFolder(), decryptedFile)
-			//touchFile()
-
-			copyFile(decryptedFile, path.join(Project.getDecryptedSnapshotFolderPath(), decryptedFile));
-
-			//fs.ensureDirSync(path.join(Project.getDecryptedSnapshotFolder(), path.dirname(output.path.toString())));
-			//fs.copyFileSync(output.path, path.join(Project.getDecryptedSnapshotFolder(), output.path.toString()));
+			this.takeDecryptedFileSnapshot(decryptedFile);
 
 			decryptedFiles.push(decryptedFile);
 		}
 
 		return decryptedFiles;
+	}
+
+	private takeDecryptedFileSnapshot(decryptedFile: string) {
+		folder.touch(project.getDecryptedSnapshotFolderPath());
+		file.copy(decryptedFile, path.join(project.getDecryptedSnapshotFolderPath(), decryptedFile));
 	}
 }

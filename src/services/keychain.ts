@@ -1,11 +1,11 @@
 import keytar from 'keytar';
-import { MasterKey } from '../lib/master-key';
+import MasterKey from '../lib/master-key';
 import { sha256 } from '../utils/crypto.utils';
-import { Project } from './project';
+import project from './project';
 
-export class Keychain {
-	static async getMasterKey(): Promise<MasterKey | null> {
-		const key = await keytar.getPassword('muna', sha256(Project.getAbsoluteRootFolderPath()));
+class Keychain {
+	async getMasterKey(): Promise<MasterKey | null> {
+		const key = await keytar.getPassword('muna', sha256(project.getAbsoluteRootFolderPath()));
 
 		if (key) {
 			return MasterKey.from(key);
@@ -14,7 +14,9 @@ export class Keychain {
 		}
 	}
 
-	static async putMasterKey(key: MasterKey): Promise<void> {
-		await keytar.setPassword('muna', sha256(Project.getAbsoluteRootFolderPath()), key.toString());
+	async putMasterKey(key: MasterKey): Promise<void> {
+		await keytar.setPassword('muna', sha256(project.getAbsoluteRootFolderPath()), key.toString());
 	}
 }
+
+export default new Keychain();

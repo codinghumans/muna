@@ -6,11 +6,8 @@ import { ApplyCommand } from './commands/apply.command';
 import { DiffCommand } from './commands/diff.command';
 import { EditCommand } from './commands/edit.command';
 import { InitCommand } from './commands/init.command';
-import { exit } from 'process';
-import { help } from 'yargs';
 
 import yargs = require('yargs/yargs');
-
 
 process.on('uncaughtException', function (error) {
 	console.error(chalk.red(error.message));
@@ -63,6 +60,10 @@ yargs(process.argv.slice(2))
 		}
 	)
 	.fail((message, error) => {
+		if (message) {
+			console.log(message);
+		}
+
 		if (error) {
 			console.log(error.message);
 		}

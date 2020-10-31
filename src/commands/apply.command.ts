@@ -1,12 +1,13 @@
 import chalk from 'chalk';
-import { MasterKey } from '../lib/master-key';
-import { Git } from '../services/git';
-import { Keychain } from '../services/keychain';
-import { Project } from '../services/project';
-import { SSM } from '../services/ssm';
+import MasterKey from '../lib/master-key';
+import file from '../services/file';
+import git from '../services/git';
+import keychain from '../services/keychain';
+import project from '../services/project';
+import ssm from '../services/ssm';
 import { separator } from '../utils/console.utils';
-import { encryptFile } from '../utils/file.utils';
-import { Command } from './command';
+import Command from './command';
+import { ResetCommand } from './reset.command';
 
 export interface CommitCommandOptions {
 	message: string;
@@ -14,10 +15,10 @@ export interface CommitCommandOptions {
 
 export class ApplyCommand implements Command {
 	async execute(): Promise<void> {
-		const decryptedFiles = await Project.getDecryptedFilePaths();
+		const decryptedFiles = await project.getDecryptedFilePaths();
 
 		if (decryptedFiles.length == 0) {
-			console.log("Nothing to encrypt. If you have encrypted files, please run 'muna edit' first.");
+			console.log('Nothing to encrypt.');
 			return;
 		}
 
@@ -32,8 +33,7 @@ export class ApplyCommand implements Command {
 		console.log('Pushing...');
 		this.push();
 
-		//remove(await Project.getIncludedFiles());
-		//remove([Project.getSnapshotDirectory()]);
+		new ResetCommand().execute();
 
 		return;
 	}
@@ -44,35 +44,35 @@ export class ApplyCommand implements Command {
 		const encryptedFiles = [] as string[];
 
 		for (let decryptedFile of decryptedFiles) {
-			const encryptedFile = await encryptFile(decryptedFile, key);
+			const encryptedFile = await file.encrypt(decryptedFile, key);
 			console.log(`Encrypted ${chalk.gray(decryptedFile)} -> ${chalk.green(encryptedFile)}`);
 			encryptedFiles.push(encryptedFile);
 		}
 
-		Keychain.putMasterKey(key);
+		keychain.putMasterKey(key);
 
 		return encryptedFiles;
 	}
 
 	private stage(files: string[]): void {
 		files.forEach((file) => {
-			Git.add(file);
+			git.add(file);
 		});
 	}
 
 	private async commit(files: string[], message: string): Promise<void> {
-		Git.commit(files, message);
+		git.commit(files, message);
 	}
 
 	private async push(): Promise<void> {
-		Git.push();
+		git.push();
 
 		console.log(chalk.yellow(separator('*')));
 
-		SSM.putMasterKey(
-			Git.getLastCommitDate(),
-			Git.getLastCommitHash(),
-			(await Keychain.getMasterKey()) as MasterKey
+		ssm.putMasterKey(
+			git.getLastCommitDate(),
+			git.getLastCommitHash(),
+			(await keychain.getMasterKey()) as MasterKey
 		);
 
 		console.log(chalk.yellow(separator('*')));

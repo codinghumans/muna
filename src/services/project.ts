@@ -1,52 +1,54 @@
 import globby from 'globby';
 import path from 'path';
-import { touchFile } from '../utils/file.utils';
-import { Git } from './git';
+import file from './file';
+import Git from './git';
 
 export const ConfigFile = 'muna.config.json';
 export const GitIgnoreFile = '.gitignore';
 export const GitIgnoredFiles = '\n# Added by Muna\n.muna\n*.*\n!*.enc\n!.gitignore\n!muna.config.json';
 
-export class Project {
-	static getAbsoluteRootFolderPath(): string {
+class Project {
+	getAbsoluteRootFolderPath(): string {
 		return Git.getAbsoluteRootFolderPath();
 	}
 
-	static getSecretsFolderPath(): string {
+	getSecretsFolderPath(): string {
 		return path.join('secrets');
 	}
 
-	static getExampleSecretsFilePath(): string {
-		return path.join(Project.getSecretsFolderPath(), 'example.yml');
+	getExampleSecretsFilePath(): string {
+		return path.join(this.getSecretsFolderPath(), 'example.yml');
 	}
 
-	static getDecryptedSnapshotFolderPath(): string {
+	getDecryptedSnapshotFolderPath(): string {
 		return path.join('.muna', 'snapshot');
 	}
 
-	static getDecryptedSnapshotFilePath(file: string): string {
-		return path.join(Project.getDecryptedSnapshotFolderPath(), file);
+	getDecryptedSnapshotFilePath(file: string): string {
+		return path.join(this.getDecryptedSnapshotFolderPath(), file);
 	}
 
-	static async getDecryptedFilePaths(): Promise<string[]> {
+	async getDecryptedFilePaths(): Promise<string[]> {
 		return await globby(['secrets/**/*.!(*enc)']);
 	}
 
-	static async getEncryptedFilePaths(): Promise<string[]> {
+	async getEncryptedFilePaths(): Promise<string[]> {
 		return await globby(['secrets/**/*.enc']);
 	}
 
-	static didFilesChange(files: string[]): boolean {
+	didFilesChange(decryptedFiles: string[]): boolean {
 		let changed = false;
 
-		files.forEach((file) => {
-			const decryptedSnapshotFile = Project.getDecryptedSnapshotFilePath(file);
+		decryptedFiles.forEach((decryptedFile) => {
+			const decryptedSnapshotFile = this.getDecryptedSnapshotFilePath(decryptedFile);
 
-			touchFile(decryptedSnapshotFile);
+			file.touch(decryptedSnapshotFile);
 
-			changed = changed || Git.didFileChange(decryptedSnapshotFile, file);
+			changed = changed || Git.didFileChange(decryptedSnapshotFile, decryptedFile);
 		});
 
 		return changed;
 	}
 }
+
+export default new Project();

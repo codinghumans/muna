@@ -2,13 +2,13 @@ import chalk from 'chalk';
 import { InitializationError } from '../errors/initialization.error';
 import file from '../services/file';
 import folder from '../services/folder';
-import Git from '../services/git';
+import git from '../services/git';
 import Project, { ConfigFile, GitIgnoredFiles, GitIgnoreFile } from '../services/project';
 import Command from './command';
 
 export class InitCommand implements Command {
 	execute(): void {
-		if (!Git.exists()) {
+		if (!git.exists()) {
 			throw new InitializationError('Not in a git repository.');
 		}
 

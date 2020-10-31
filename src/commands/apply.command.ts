@@ -31,9 +31,9 @@ export class ApplyCommand implements Command {
 		this.commit(encryptedFiles, 'Updated');
 
 		console.log('Pushing...');
-		this.push();
+		await this.push();
 
-		new ResetCommand().execute();
+		await new ResetCommand().execute();
 
 		return;
 	}
@@ -49,7 +49,7 @@ export class ApplyCommand implements Command {
 			encryptedFiles.push(encryptedFile);
 		}
 
-		keychain.putMasterKey(key);
+		await keychain.putMasterKey(key);
 
 		return encryptedFiles;
 	}
@@ -60,7 +60,7 @@ export class ApplyCommand implements Command {
 		});
 	}
 
-	private async commit(files: string[], message: string): Promise<void> {
+	private commit(files: string[], message: string): void {
 		git.commit(files, message);
 	}
 
@@ -69,7 +69,7 @@ export class ApplyCommand implements Command {
 
 		console.log(chalk.yellow(separator('*')));
 
-		ssm.putMasterKey(
+		await ssm.putMasterKey(
 			git.getLastCommitDate(),
 			git.getLastCommitHash(),
 			(await keychain.getMasterKey()) as MasterKey

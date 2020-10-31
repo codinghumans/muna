@@ -1,15 +1,15 @@
 import globby from 'globby';
 import path from 'path';
 import file from './file';
-import Git from './git';
+import git from './git';
 
 export const ConfigFile = 'muna.config.json';
 export const GitIgnoreFile = '.gitignore';
-export const GitIgnoredFiles = '\n# Added by Muna\n.muna\nsecrets/*.*\nsecrets/!*.enc';
+export const GitIgnoredFiles = '\n# Added by Muna\n.muna\nsecrets/*.*\n!secrets/*.enc';
 
 class Project {
 	getAbsoluteRootFolderPath(): string {
-		return Git.getAbsoluteRootFolderPath();
+		return git.getAbsoluteRootFolderPath();
 	}
 
 	getSecretsFolderPath(): string {
@@ -44,7 +44,7 @@ class Project {
 
 			file.touch(decryptedSnapshotFile);
 
-			changed = changed || Git.didFileChange(decryptedSnapshotFile, decryptedFile);
+			changed = changed || git.didFileChange(decryptedSnapshotFile, decryptedFile);
 		});
 
 		return changed;

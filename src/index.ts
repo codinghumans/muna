@@ -59,6 +59,14 @@ yargs(process.argv.slice(2))
 			await new ApplyCommand().execute();
 		}
 	)
+	.command(
+		'reset',
+		'TODO',
+		() => {},
+		async () => {
+			await new EditCommand().execute();
+		}
+	)
 	.fail((message, error) => {
 		if (message) {
 			console.log(message);

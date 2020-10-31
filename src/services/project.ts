@@ -5,7 +5,7 @@ import Git from './git';
 
 export const ConfigFile = 'muna.config.json';
 export const GitIgnoreFile = '.gitignore';
-export const GitIgnoredFiles = '\n# Added by Muna\n.muna\n*.*\n!*.enc\n!.gitignore\n!muna.config.json';
+export const GitIgnoredFiles = '\n# Added by Muna\n.muna\nsecrets/*.*\nsecrets/!*.enc';
 
 class Project {
 	getAbsoluteRootFolderPath(): string {

@@ -1,12 +1,13 @@
 {
   "name": "@codinghumans/muna",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Seamless encryption of secret files in git.",
   "homepage": "https://github.com/codinghumans/muna#readme",
   "author": "Marc Marcet Ribas",
   "license": "ISC",
   "main": "./bin/muna.js",
   "files": [
+    "./dist/**/*",
     "./bin/muna.js"
   ],
   "bin": {

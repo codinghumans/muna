@@ -1,9 +1,10 @@
 import aws from 'aws-sdk';
 import chalk from 'chalk';
 import MasterKey from '../lib/master-key';
+import project from './project';
 
 const ssm = new aws.SSM({
-	//region: config.aws.region,
+	region: project.config?.aws?.region || 'eu-west-1',
 });
 
 class SSM {

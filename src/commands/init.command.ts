@@ -37,7 +37,7 @@ export class InitCommand implements Command {
 
 	private createConfigFile() {
 		if (!file.exists(ConfigFile)) {
-			file.writeJSON(ConfigFile, {});
+			file.writeJSON(ConfigFile, { aws: { region: 'eu-west-1' } });
 			console.log(`Created ${chalk.green(ConfigFile)}`);
 		} else {
 			console.log(`Skipped ${chalk.gray(ConfigFile)}`);

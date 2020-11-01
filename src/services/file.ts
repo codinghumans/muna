@@ -40,6 +40,10 @@ class File {
 		return fs.readFileSync(file).toString();
 	}
 
+	readJSON(file: string): any {
+		return JSON.parse(this.read(file));
+	}
+
 	copy(source: string, destination: string): void {
 		folder.touch(path.dirname(destination));
 		fs.copyFileSync(source, destination);

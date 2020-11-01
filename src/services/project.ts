@@ -8,6 +8,10 @@ export const GitIgnoreFile = '.gitignore';
 export const GitIgnoredFiles = '\n# Added by Muna\n.muna\nsecrets/*.*\n!secrets/*.enc';
 
 class Project {
+	get config(): any {
+		return file.readJSON(ConfigFile);
+	}
+
 	getAbsoluteRootFolderPath(): string {
 		return git.getAbsoluteRootFolderPath();
 	}

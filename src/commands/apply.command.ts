@@ -5,7 +5,6 @@ import git from '../services/git';
 import keychain from '../services/keychain';
 import project from '../services/project';
 import ssm from '../services/ssm';
-import { separator } from '../utils/console.utils';
 import Command from './command';
 import { EditCommand } from './edit.command';
 import { ResetCommand } from './reset.command';
@@ -79,14 +78,10 @@ export class ApplyCommand implements Command {
 	}
 
 	private async pushSSM() {
-		console.log(chalk.yellow(separator('*', 66)));
-
 		await ssm.putMasterKey(
 			git.getLastCommitDate(),
 			git.getLastCommitHash(),
 			(await keychain.getMasterKey()) as MasterKey
 		);
-
-		console.log(chalk.yellow(separator('*', 66)));
 	}
 }

@@ -16,7 +16,7 @@
   "scripts": {
     "build": "tsc -p .",
     "watch": "tsc -p . --watch",
-    "release:create": "./node_modules/.bin/semantic-release"
+    "release": "./node_modules/.bin/semantic-release"
   },
   "dependencies": {
     "aws-sdk": "^2.778.0",

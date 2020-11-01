@@ -25,18 +25,31 @@ class SSM {
 	}
 
 	async putMasterKey(commitDate: string, commitHash: string, key: MasterKey): Promise<void> {
-		const name = `/secrets/master-key/${commitDate}/${commitHash}`;
+		const path = `/secrets/master-key`;
+		const commitPath = `${path}/${commitDate}/${commitHash}`;
+		const latestPath = `${path}/latest`;
 
 		await ssm
 			.putParameter({
-				Name: name,
+				Name: commitPath,
 				Value: key.toString(),
 				Type: 'SecureString',
 				Overwrite: true,
 			})
-			.promise();
+			.promise()
+			.then(() => {
+				return ssm
+					.putParameter({
+						Name: latestPath,
+						Value: key.toString(),
+						Type: 'SecureString',
+						Overwrite: true,
+					})
+					.promise();
+			});
 
-		console.log(`Master key published to SSM ${chalk.green(name)}`);
+		console.log(`Master key published to SSM ${chalk.green(commitPath)}`);
+		console.log(`Master key published to SSM ${chalk.green(latestPath)}`);
 	}
 }
 

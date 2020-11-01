@@ -14,7 +14,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "semantic-release": "semantic-release"
+    "release": "semantic-release"
   },
   "dependencies": {
     "aws-sdk": "^2.778.0",

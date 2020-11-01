@@ -30,7 +30,6 @@ export default class MasterKey {
 		}
 
 		if (key) {
-			x;
 			console.log('Master key fetched from SSM.');
 		}
 

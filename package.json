@@ -43,8 +43,10 @@
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
   },
-  "commitlint":{
-    "extends": ["@commitlint/config-conventional"]
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"

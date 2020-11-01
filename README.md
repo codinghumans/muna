@@ -1,11 +1,7 @@
 # Muna
 
-Seamless encryption of secret files in git. Suports AWS KMS.
+Seamless encryption of secret files in git.
 
-## Commands
+# Getting started
 
-### muna init
-
-### muna decrypt
-
-### muna encrypt
+TODO

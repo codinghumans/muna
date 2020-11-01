@@ -1,13 +1,19 @@
 {
-  "name": "muna",
+  "name": "@codinghumans/muna",
   "version": "1.0.0",
-  "description": "Seamless encryption of secret files in git. Suports AWS KMS.",
+  "description": "Seamless encryption of secret files in git.",
+  "homepage": "https://github.com/codinghumans/muna#readme",
+  "author": "Marc Marcet Ribas",
+  "license": "ISC",
   "main": "./bin/muna.js",
   "files": [
     "./bin/muna.js"
   ],
   "bin": {
-    "muna": "./bin/muna.js"
+    "muna": "bin/muna.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
     "aws-sdk": "^2.778.0",
@@ -29,17 +35,14 @@
     "@types/yargs": "^15.0.9",
     "typescript": "^4.0.3"
   },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "publishConfig": { 
+    "registry": "https://npm.pkg.github.com/" 
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/codinghumans/muna.git"
   },
-  "author": "",
-  "license": "ISC",
   "bugs": {
     "url": "https://github.com/codinghumans/muna/issues"
-  },
-  "homepage": "https://github.com/codinghumans/muna#readme"
+  }
 }

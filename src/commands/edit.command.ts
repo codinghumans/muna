@@ -29,13 +29,19 @@ export class EditCommand implements Command {
 
 		const decryptedFiles = [] as string[];
 
+		console.log('Decrypting...');
+
 		for (let encryptedFile of encryptedFiles) {
-			const decryptedFile = await file.decrypt(encryptedFile, key);
-			console.log(`Decrypted ${chalk.gray(encryptedFile)} -> ${chalk.green(decryptedFile)}`);
+			if (!file.exists(file.convertToDecryptedFilePath(encryptedFile))) {
+				const decryptedFile = await file.decrypt(encryptedFile, key);
+				console.log(`Decrypted ${encryptedFile} -> ${chalk.green(decryptedFile)}`);
 
-			this.takeDecryptedFileSnapshot(decryptedFile);
+				this.takeDecryptedFileSnapshot(decryptedFile);
 
-			decryptedFiles.push(decryptedFile);
+				decryptedFiles.push(decryptedFile);
+			} else {
+				console.log(`Skipped ${chalk.gray(encryptedFile)}`);
+			}
 		}
 
 		return decryptedFiles;

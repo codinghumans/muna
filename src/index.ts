@@ -2,10 +2,11 @@
 
 import chalk = require('chalk');
 
-import { ApplyCommand } from './commands/apply.command';
+import { ApplyCommand, ApplyCommandOptions } from './commands/apply.command';
 import { DiffCommand } from './commands/diff.command';
 import { EditCommand } from './commands/edit.command';
 import { InitCommand } from './commands/init.command';
+import { ResetCommand } from './commands/reset.command';
 
 import yargs = require('yargs/yargs');
 
@@ -56,15 +57,15 @@ yargs(process.argv.slice(2))
 				.demandOption(['r']);
 		},
 		async (argv: any) => {
-			await new ApplyCommand().execute();
+			await new ApplyCommand().execute(argv as ApplyCommandOptions);
 		}
 	)
 	.command(
 		'reset',
-		'TODO',
+		'Reverts the edit command, deleting all the decrypted files and their snapshots.',
 		() => {},
 		async () => {
-			await new EditCommand().execute();
+			await new ResetCommand().execute();
 		}
 	)
 	.fail((message, error) => {

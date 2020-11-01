@@ -7,14 +7,15 @@ import project from '../services/project';
 import ssm from '../services/ssm';
 import { separator } from '../utils/console.utils';
 import Command from './command';
+import { EditCommand } from './edit.command';
 import { ResetCommand } from './reset.command';
 
-export interface CommitCommandOptions {
-	message: string;
+export interface ApplyCommandOptions {
+	reason: string;
 }
 
 export class ApplyCommand implements Command {
-	async execute(): Promise<void> {
+	async execute(options: ApplyCommandOptions): Promise<void> {
 		const decryptedFiles = await project.getDecryptedFilePaths();
 
 		if (decryptedFiles.length == 0) {
@@ -22,18 +23,25 @@ export class ApplyCommand implements Command {
 			return;
 		}
 
+		console.log('Ensuring all encrypted files are decrypted before re-encrypting...');
+		await new EditCommand().execute();
+
 		const encryptedFiles = await this.encrypt(decryptedFiles);
+
+		console.log('Cleaning up decrypted files...');
+		await new ResetCommand().execute();
 
 		console.log('Staging...');
 		this.stage(encryptedFiles);
 
 		console.log('Committing...');
-		this.commit(encryptedFiles, 'Updated');
+		this.commit(encryptedFiles, options.reason);
 
 		console.log('Pushing...');
 		await this.push();
 
-		await new ResetCommand().execute();
+		console.log('Pushing to SSM...');
+		await this.pushSSM();
 
 		return;
 	}
@@ -43,9 +51,11 @@ export class ApplyCommand implements Command {
 
 		const encryptedFiles = [] as string[];
 
+		console.log('Encrypting...');
+
 		for (let decryptedFile of decryptedFiles) {
 			const encryptedFile = await file.encrypt(decryptedFile, key);
-			console.log(`Encrypted ${chalk.gray(decryptedFile)} -> ${chalk.green(encryptedFile)}`);
+			console.log(`Encrypted ${decryptedFile} -> ${chalk.green(encryptedFile)}`);
 			encryptedFiles.push(encryptedFile);
 		}
 
@@ -66,8 +76,10 @@ export class ApplyCommand implements Command {
 
 	private async push(): Promise<void> {
 		git.push();
+	}
 
-		console.log(chalk.yellow(separator('*')));
+	private async pushSSM() {
+		console.log(chalk.yellow(separator('*', 66)));
 
 		await ssm.putMasterKey(
 			git.getLastCommitDate(),
@@ -75,6 +87,6 @@ export class ApplyCommand implements Command {
 			(await keychain.getMasterKey()) as MasterKey
 		);
 
-		console.log(chalk.yellow(separator('*')));
+		console.log(chalk.yellow(separator('*', 66)));
 	}
 }

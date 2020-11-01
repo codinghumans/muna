@@ -10,7 +10,7 @@ class File {
 		const decipher = crypto.createDecipheriv('AES-256-CBC', key.key, key.iv);
 
 		const input = fs.createReadStream(file);
-		const output = fs.createWriteStream(file.replace('.enc', ''));
+		const output = fs.createWriteStream(this.convertToDecryptedFilePath(file));
 
 		await new Promise((resolve) => input.pipe(decipher).pipe(output).on('finish', resolve));
 
@@ -21,11 +21,19 @@ class File {
 		const encipher = crypto.createCipheriv('AES-256-CBC', key.key, key.iv);
 
 		const input = fs.createReadStream(file);
-		const output = fs.createWriteStream(`${file}.enc`);
+		const output = fs.createWriteStream(this.convertToEncryptedFilePath(file));
 
 		await new Promise((resolve) => input.pipe(encipher).pipe(output).on('finish', resolve));
 
 		return output.path.toString();
+	}
+
+	convertToDecryptedFilePath(encryptedFile: string): string {
+		return encryptedFile.replace('.enc', '');
+	}
+
+	convertToEncryptedFilePath(decryptedFile: string): string {
+		return `${decryptedFile}.enc`;
 	}
 
 	read(file: string): string {

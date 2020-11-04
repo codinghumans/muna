@@ -1,57 +1,85 @@
-import globby from 'globby';
+import { cosmiconfigSync } from 'cosmiconfig';
 import path from 'path';
-import file from './file';
-import git from './git';
+import { ConfigurationError } from '../errors/configuration.error';
+import fs from './fs';
 
-export const ConfigFile = 'muna.config.json';
-export const GitIgnoreFile = '.gitignore';
-export const GitIgnoredFiles = '\n# Added by Muna\n.muna\nsecrets/*.*\n!secrets/*.enc';
+export const Configfile = 'muna.config.json';
+
+export interface Configuration {
+	aws?: { region?: string; kms?: { key?: string } };
+}
 
 class Project {
-	get config(): any {
-		return file.readJSON(ConfigFile);
+	#config?: Configuration;
+
+	get config(): Configuration {
+		if (!this.#config) {
+			const result = cosmiconfigSync('muna').search();
+			this.#config = result?.config || {};
+		}
+
+		return this.#config!;
 	}
 
-	getAbsoluteRootFolderPath(): string {
-		return git.getAbsoluteRootFolderPath();
+	get region(): string {
+		const region = this.config.aws?.region;
+
+		if (!region) {
+			throw new ConfigurationError('aws.region not defined.');
+		}
+
+		return region;
 	}
 
-	getSecretsFolderPath(): string {
-		return path.join('secrets');
+	set region(region: string) {
+		if (!this.config.aws) this.config.aws = {};
+		this.config.aws.region = region;
 	}
 
-	getExampleSecretsFilePath(): string {
-		return path.join(this.getSecretsFolderPath(), 'example.yml');
+	get key(): string {
+		const key = this.config.aws?.kms?.key;
+
+		if (!key) {
+			throw new ConfigurationError('aws.kms.key not defined.');
+		}
+
+		return key;
 	}
 
-	getDecryptedSnapshotFolderPath(): string {
-		return path.join('.muna', 'snapshot');
+	set key(key: string) {
+		if (!this.config.aws) this.config.aws = {};
+		if (!this.config.aws.kms) this.config.aws.kms = {};
+		this.config.aws.kms.key = key;
 	}
 
-	getDecryptedSnapshotFilePath(file: string): string {
-		return path.join(this.getDecryptedSnapshotFolderPath(), file);
+	saveConfiguration() {
+		console.log(`${!fs.exists(Configfile) ? 'Creating' : 'Updating'} ${Configfile}...`);
+		fs.writeJSON(Configfile, this.#config);
 	}
 
-	async getDecryptedFilePaths(): Promise<string[]> {
-		return await globby(['secrets/**/*.!(*enc)']);
+	getFileSnapshotPath(file: string): string {
+		return path.join(path.dirname(file), '.muna', 'snapshot', path.basename(file));
 	}
 
-	async getEncryptedFilePaths(): Promise<string[]> {
-		return await globby(['secrets/**/*.enc']);
+	createFileSnapshot(file: string) {
+		fs.copy(file, this.getFileSnapshotPath(file));
 	}
 
-	didFilesChange(decryptedFiles: string[]): boolean {
-		let changed = false;
+	diff(files: string[]): boolean {
+		let changes = false;
 
-		decryptedFiles.forEach((decryptedFile) => {
-			const decryptedSnapshotFile = this.getDecryptedSnapshotFilePath(decryptedFile);
+		files.forEach((file) => {
+			const snapshot = this.getFileSnapshotPath(file);
 
-			file.touch(decryptedSnapshotFile);
+			fs.touch(snapshot);
 
-			changed = changed || git.didFileChange(decryptedSnapshotFile, decryptedFile);
+			if (!fs.equals(snapshot, file)) {
+				fs.diff(snapshot, file);
+				changes = true;
+			}
 		});
 
-		return changed;
+		return changes;
 	}
 }
 

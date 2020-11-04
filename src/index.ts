@@ -1,83 +1,48 @@
 #!/usr/bin/env node
 
 import chalk = require('chalk');
-
-import { ApplyCommand, ApplyCommandOptions } from './commands/apply.command';
+import program from 'commander';
+import { ConfigureCommand } from './commands/configure.command';
+import { DecryptCommand } from './commands/decrypt.command';
 import { DiffCommand } from './commands/diff.command';
-import { EditCommand } from './commands/edit.command';
-import { InitCommand } from './commands/init.command';
-import { ResetCommand } from './commands/reset.command';
+import { EncryptCommand } from './commands/encrypt.command';
 
-import yargs = require('yargs/yargs');
+const exec = async (fn: () => Promise<void>) => {
+	try {
+		await fn();
+	} catch (error) {
+		console.log(error.message);
+	}
+};
 
-process.on('uncaughtException', function (error) {
-	console.error(chalk.red(error.message));
-	process.exit(1);
-});
+program.usage('<command> [options]');
 
-yargs(process.argv.slice(2))
-	.scriptName('muna')
-	.usage('Usage: $0 <command> [options]')
-	.command(
-		'init',
-		'Initializes a muna project.',
-		() => {},
-		() => {
-			new InitCommand().execute();
-		}
-	)
-	.command(
-		'diff',
-		'Generates a git diff between the encrypted and non-encrypted versions of all the non-encrypted files included in the project.',
-		() => {},
-		async (argv: any) => {
-			await new DiffCommand().execute();
-		}
-	)
-	.command(
-		'edit',
-		'Decrypts all the encrypted files and allows the user to edit them.',
-		() => {},
-		async () => {
-			await new EditCommand().execute();
-		}
-	)
-	.command(
-		'apply',
-		'Encrypts, commits, and pushes to the remote git repository all the non-encrypted files included in the project. The master key is also automatically added to the SSM Parameter Store.',
-		(yargs) => {
-			return yargs
-				.usage('$0 apply -r <reason>')
-				.group(['r'], "Options for 'apply':")
-				.option('reason', {
-					type: 'string',
-					alias: 'r',
-					describe: 'The reason of this change.',
-				})
-				.demandOption(['r']);
-		},
-		async (argv: any) => {
-			await new ApplyCommand().execute(argv as ApplyCommandOptions);
-		}
-	)
-	.command(
-		'reset',
-		'Reverts the edit command, deleting all the decrypted files and their snapshots.',
-		() => {},
-		async () => {
-			await new ResetCommand().execute();
-		}
-	)
-	.fail((message, error) => {
-		if (message) {
-			console.log(message);
-		}
+program
+	.command('configure <region> <key>')
+	.description('TODO')
+	.action((region, key) => {
+		exec(async () => await new ConfigureCommand().execute({ region: region, key: key }));
+	});
 
-		if (error) {
-			console.log(error.message);
-		}
-		process.exit(1);
-	})
-	.epilog('Copyright 2020, Coding Humans. All rights reserved.')
-	.help()
-	.version().argv;
+program
+	.command('decrypt <path>')
+	.description('TODO')
+	.action(async (path) => {
+		exec(async () => await new DecryptCommand().execute({ path: path }));
+	});
+
+program
+	.command('encrypt <path>')
+	.description('TODO')
+	.action(async (path) => {
+		exec(async () => await new EncryptCommand().execute({ path: path }));
+	});
+
+program
+	.command('diff <path>')
+	.description('TODO')
+	.action(async (path) => {
+		exec(async () => await new DiffCommand().execute({ path: path }));
+	});
+
+program.parse(process.argv);

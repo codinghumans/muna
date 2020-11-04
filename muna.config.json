@@ -1,0 +1,8 @@
+{
+  "aws": {
+    "region": "eu-west-1",
+    "kms": {
+      "key": "secrets/master-key122345334534d3"
+    }
+  }
+}

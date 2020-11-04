@@ -1,33 +1,20 @@
-import { ConfigurationError } from '../errors/configuration.error';
-import file from '../services/file';
-import git from '../services/git';
-import project, { ConfigFile } from '../services/project';
+import globby from 'globby';
+import path from 'path';
+import project from '../services/project';
 import Command from './command';
 
+export interface DiffCommandOptions {
+	path: string;
+}
+
 export class DiffCommand implements Command {
-	async execute(): Promise<void> {
-		if (!file.exists(ConfigFile)) {
-			throw new ConfigurationError(`${ConfigFile} not found.`);
-		}
+	async execute(options: DiffCommandOptions): Promise<void> {
+		const decryptedFiles = await globby([options.path.split(path.sep).join('/'), '!**/*.enc']);
 
-		const decryptedFiles = await project.getDecryptedFilePaths();
+		const changes = project.diff(decryptedFiles);
 
-		if (project.didFilesChange(decryptedFiles)) {
-			this.diff(decryptedFiles);
-		} else {
+		if (!changes) {
 			console.log('Nothing to diff.');
 		}
-	}
-
-	private diff(decryptedFiles: string[]): void {
-		decryptedFiles.forEach((decryptedFile) => {
-			const decriptedSnapshotFile = project.getDecryptedSnapshotFilePath(decryptedFile);
-
-			file.touch(decriptedSnapshotFile);
-
-			if (git.didFileChange(decriptedSnapshotFile, decryptedFile)) {
-				git.diff(decriptedSnapshotFile, decryptedFile);
-			}
-		});
 	}
 }

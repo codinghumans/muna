@@ -1,13 +1,13 @@
 
 # Muna
 
-Seamless file encryption with AWS KMS.
+Muna is a very simple command line interface (cli) that provides fast and secure file encryption. It relies on (AWS KMS)(https://aws.amazon.com/en/kms) to store your encryption keys, removing the complexities of having to manage, secure, and rotate your encryption keys manually, while at the same time, also making them easily available from anywhere.
 
 ## Getting Started
 
 ### Prerequisites
 
-Muna relies on AWS KMS to store the cryptographic key that protects your files. Before you can begin encrypting, you will need to set your AWS credentials using one of the multiple ways supported by the AWS Node.js SDK.
+Before you can begin encrypting, you will need to set your AWS credentials using one of the multiple ways supported by the AWS Node.js SDK.
 
 One simple way to do it is adding them to the `~/.aws/credentials` file:
 
@@ -40,7 +40,7 @@ If the alias is already associated with a key, Muna will use the existing key. O
 
 ## Usage
 
-Encrypt one or multiple files by either supplying either path or a glob pattern:
+Encrypt one or multiple files by supplying either path or a glob pattern:
 
 ```
 $ muna encrypt **/*.json

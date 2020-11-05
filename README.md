@@ -52,9 +52,15 @@ Then decrypt them:
 $ muna decrypt **/*.json
 ```
 
+Additionally, Muna is also able to generate a `git diff` of all the changes made to your files since they were last decrypted:
+
+```
+$ muna diff **/*.json
+```
+
 ## License
 
-Distributed under the MIT License. See `LICENSE` for more information.
+Distributed under the MIT License. See [LICENSE](LICENSE) for more information.
 
 
 

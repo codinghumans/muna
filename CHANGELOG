@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/codinghumans/muna/compare/1.0.0...1.0.1) (2020-11-05)
+
+
+### Bug Fixes
+
+* semantic-release plugin order ([db0175e](https://github.com/codinghumans/muna/commit/db0175eb89b6e8895c9faf54a89e08fc798de5d1))
+
 # 1.0.0 (2020-11-05)
 
 

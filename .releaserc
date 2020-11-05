@@ -15,7 +15,7 @@
       "message": "chore(release): cut the ${nextRelease.version} release [skip ci]"
     }],
     ["@semantic-release/github", {
-      "assets": ["dist/**", "bin/muna.js"]
+      "assets": ["dist/**/*", "bin/muna.js"]
     }],
   ]
 }

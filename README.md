@@ -1,18 +1,30 @@
+
 # Muna
 
 Seamless file encryption with AWS KMS.
 
-# Getting started
+## Getting Started
 
-## Installation
+### Installation
 
 ```
 $ npm install -g @codinghumans/muna
 ```
 
-## Configuration
+### Configuration
 
-The quickest way to get started is to run the `muna configure` command with your AWS region and a key alias:
+Muna relies on AWS KMS to encrypt and decrypt files. You'll need to supply your AWS credentials through any of the [configuration methods](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/setting-credentials-node.html) supported by the AWS Node.js SDK.
+
+One simple way to do it is adding them to the `~/.aws/credentials` file:
+
+```
+$ cat ~/.aws/credentials
+[default]
+aws_access_key_id = AKI.....
+aws_secret_access_key = mw......
+```
+
+Then simply run the `muna configure` command to set your AWS region and the key alias to use:
 
 ```
 $ muna configure eu-west-1 muna/master-key
@@ -20,25 +32,29 @@ Creating kms key...
 Creating kms alias...
 Creating muna.config.json...
 ```
+If the alias is already associated with a key, Muna will use the existing key instead of trying to create a new one.
 
-If there is any existing KMS key associated with the alias, muna will try will use it. Otherwise, muna will simply try to create a new key.
+## Usage
 
-# Usage
-
-## Encrypting one or multiple files
+Encrypt one or multiple files by either supplying a path or a glob:
 
 ```
 $ muna encrypt **/*.json
 ```
 
-## Decrypting one or multiple files
+Then decrypt them:
 
 ```
 $ muna decrypt **/*.json
 ```
 
-## Comparing a file with it's encrypted counterpart.
+## License
 
-```
-$ muna diff **/*.json
-```
+Distributed under the MIT License. See `LICENSE` for more information.
+
+
+
+
+
+
+

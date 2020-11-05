@@ -1,4 +1,16 @@
 {
   "branches": ["main"],
-  "tagFormat": "${version}"
+  "tagFormat": "${version}",
+  "plugins": [
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/release-notes-generator",
+    ["@semantic-release/changelog", {
+      "changelogFile": "CHANGELOG"
+    }],
+    ["@semantic-release/git", {
+      "assets": ["CHANGELOG", "package.json"]
+    }],
+    "@semantic-release/github",
+    "@semantic-release/npm"
+  ]
 }

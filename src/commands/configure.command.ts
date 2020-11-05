@@ -1,13 +1,13 @@
-import kms from '../services/kms';
-import project from '../services/project';
-import Command from './command';
+import kms from '../modules/kms';
+import project from '../modules/project';
+import BaseCommand from './base.command';
 
 export interface ConfigureCommandOptions {
 	key: string;
 	region: string;
 }
 
-export class ConfigureCommand implements Command {
+export class ConfigureCommand implements BaseCommand {
 	async execute(options: ConfigureCommandOptions): Promise<void> {
 		project.configure(options.region, options.key);
 

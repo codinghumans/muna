@@ -4,6 +4,7 @@
   "homepage": "https://github.com/codinghumans/muna#readme",
   "author": "Marc Marcet Ribas",
   "license": "MIT",
+  "public": true,
   "main": "./bin/muna.js",
   "files": [
     "dist/*",
@@ -32,6 +33,7 @@
     "@types/chalk": "^2.2.0",
     "@types/cosmiconfig": "^6.0.0",
     "@types/fs-extra": "^9.0.2",
+    "@types/lodash.isequal": "^4.5.5",
     "@types/node": "^14.14.2",
     "husky": "^4.3.0",
     "semantic-release": "^17.2.2",
@@ -46,9 +48,6 @@
     "extends": [
       "@commitlint/config-conventional"
     ]
-  },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
   },
   "repository": {
     "type": "git",

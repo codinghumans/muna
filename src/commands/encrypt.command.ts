@@ -1,14 +1,14 @@
 import globby from 'globby';
 import path from 'path';
 import { KMSError } from '../errors/kms.error';
-import kms from '../services/kms';
-import Command from './command';
+import kms from '../modules/kms';
+import BaseCommand from './base.command';
 
 export interface EncryptCommandOptions {
 	path: string;
 }
 
-export class EncryptCommand implements Command {
+export class EncryptCommand implements BaseCommand {
 	async execute(options: EncryptCommandOptions): Promise<any> {
 		const decryptedFiles = await globby([options.path.split(path.sep).join('/'), '!**/*.enc']);
 

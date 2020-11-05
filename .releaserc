@@ -8,7 +8,8 @@
       "changelogFile": "CHANGELOG"
     }],
     ["@semantic-release/git", {
-      "assets": ["CHANGELOG", "package.json"]
+      "assets": ["CHANGELOG", "package.json"],
+      "message": "release: ${nextRelease.version}\n\n[skip ci]"
     }],
     "@semantic-release/github",
     "@semantic-release/npm"

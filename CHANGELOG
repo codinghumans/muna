@@ -1,3 +1,10 @@
+## [1.0.4](https://github.com/codinghumans/muna/compare/1.0.3...1.0.4) (2020-11-05)
+
+
+### Bug Fixes
+
+* set final semantic-release plugin configuration ([45de5b6](https://github.com/codinghumans/muna/commit/45de5b66ded9ed8b1d411c67fefb2ab668ba3675))
+
 ## [1.0.3](https://github.com/codinghumans/muna/compare/1.0.2...1.0.3) (2020-11-05)
 
 

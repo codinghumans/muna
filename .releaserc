@@ -9,7 +9,7 @@
     }],
     ["@semantic-release/git", {
       "assets": ["CHANGELOG", "package.json"],
-      "message": "release: ${nextRelease.version}\n\n[skip ci]"
+      "message": "chore(release): ${nextRelease.version} ***NO_CI***"
     }],
     "@semantic-release/github",
     "@semantic-release/npm"

@@ -1,5 +1,4 @@
 import fs from 'fs-extra';
-import rimraf from 'rimraf';
 
 class Folder {
 	create(folder: string): void {
@@ -14,10 +13,6 @@ class Folder {
 		if (!this.exists(folder)) {
 			this.create(folder);
 		}
-	}
-
-	delete(folder: string): void {
-		rimraf.sync(folder);
 	}
 }
 

@@ -1,10 +1,9 @@
 {
   "name": "@codinghumans/muna",
-  "version": "1.1.0",
-  "description": "Seamless encryption of secret files in git.",
+  "description": "Seamless file encryption with AWS KMS.",
   "homepage": "https://github.com/codinghumans/muna#readme",
   "author": "Marc Marcet Ribas",
-  "license": "ISC",
+  "license": "MIT",
   "main": "./bin/muna.js",
   "files": [
     "dist/*",
@@ -16,7 +15,7 @@
   "scripts": {
     "build": "tsc -p .",
     "watch": "tsc -p . --watch",
-    "release": "./node_modules/.bin/semantic-release"
+    "release": "./node_modules/.bin/semantic-release && git reset --hard"
   },
   "dependencies": {
     "aws-sdk": "^2.778.0",
@@ -24,11 +23,7 @@
     "commander": "^6.2.0",
     "cosmiconfig": "^7.0.0",
     "fs-extra": "^9.0.1",
-    "globby": "^11.0.1",
-    "keytar": "^7.0.0",
-    "lodash": "^4.17.20",
-    "rimraf": "^3.0.2",
-    "yargs": "^16.1.0"
+    "globby": "^11.0.1"
   },
   "devDependencies": {
     "@commitlint/cli": "^11.0.0",
@@ -37,8 +32,6 @@
     "@types/cosmiconfig": "^6.0.0",
     "@types/fs-extra": "^9.0.2",
     "@types/node": "^14.14.2",
-    "@types/rimraf": "^3.0.0",
-    "@types/yargs": "^15.0.9",
     "husky": "^4.3.0",
     "semantic-release": "^17.2.2",
     "typescript": "^4.0.3"

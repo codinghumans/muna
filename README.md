@@ -7,19 +7,22 @@ Seamless file encryption with AWS KMS.
 1. Configure muna with your AWS region and a key alias.
 
 ```
-npx muna configure eu-west-1 muna/master-key
+$ npx muna configure eu-west-1 muna/master-key
+Creating kms key...
+Creating kms alias...
+Creating muna.config.json...
 ```
 
-If muna is not able to find any key, it will try to create it.
+If there is an existing KMS key associated with the alias, muna try will use it. Otherwise, it will create a new one.
 
 2. Encrypt one or multiple files:
 
 ```
-npx muna encrypt **/*.json
+$ npx muna encrypt **/*.json
 ```
 
 3. Then decrypt:
 
 ```
-npx muna decrypt **/*.json
+$ npx muna decrypt **/*.json
 ```

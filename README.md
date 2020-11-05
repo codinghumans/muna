@@ -4,4 +4,4 @@ Seamless file encryption with AWS KMS.
 
 # Getting started
 
-TODO
+1. Configure your

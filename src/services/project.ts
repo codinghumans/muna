@@ -1,4 +1,5 @@
 import { cosmiconfigSync } from 'cosmiconfig';
+import isEqual from 'lodash.isequal';
 import path from 'path';
 import { ConfigurationError } from '../errors/configuration.error';
 import fs from './fs';
@@ -52,9 +53,16 @@ class Project {
 		this.config.aws.kms.key = key;
 	}
 
+	configure(region: string, key: string) {
+		this.region = region;
+		this.key = key;
+	}
+
 	saveConfiguration() {
-		console.log(`${!fs.exists(Configfile) ? 'Creating' : 'Updating'} ${Configfile}...`);
-		fs.writeJSON(Configfile, this.#config);
+		if (!isEqual(this.config, fs.readJSON(Configfile))) {
+			console.log(`${!fs.exists(Configfile) ? 'Creating' : 'Updating'} ${Configfile}...`);
+			fs.writeJSON(Configfile, this.config);
+		}
 	}
 
 	getFileSnapshotPath(file: string): string {

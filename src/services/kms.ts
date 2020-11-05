@@ -17,14 +17,25 @@ class KMS {
 		return this.#kms;
 	}
 
-	async create(key: string, region: string): Promise<void> {
-		project.key = key;
-		project.region = region;
-
+	async getKeyId(): Promise<string | null> {
 		let keyId = null;
 
 		try {
 			keyId = (await this.kms.describeKey({ KeyId: `alias/${project.key}` }).promise()).KeyMetadata!.KeyId;
+		} catch (error) {}
+
+		try {
+			keyId = (await this.kms.describeKey({ KeyId: project.key }).promise()).KeyMetadata!.KeyId;
+		} catch (error) {}
+
+		return keyId;
+	}
+
+	async create(key: string): Promise<void> {
+		let keyId = null;
+
+		try {
+			keyId = (await this.kms.describeKey({ KeyId: `alias/${key}` }).promise()).KeyMetadata!.KeyId;
 		} catch (error) {}
 
 		if (keyId) {
@@ -49,24 +60,6 @@ class KMS {
 				TargetKeyId: keyId,
 			})
 			.promise();
-	}
-
-	async getKeyId(): Promise<string> {
-		let keyId = null;
-
-		try {
-			keyId = (await this.kms.describeKey({ KeyId: `alias/${project.key}` }).promise()).KeyMetadata!.KeyId;
-		} catch (error) {}
-
-		try {
-			keyId = (await this.kms.describeKey({ KeyId: project.key }).promise()).KeyMetadata!.KeyId;
-		} catch (error) {}
-
-		if (!keyId) {
-			throw new KMSError('Key not found.');
-		}
-
-		return keyId;
 	}
 
 	async decryptFile(path: string, keyId: string): Promise<string> {

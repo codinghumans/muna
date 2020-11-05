@@ -23,7 +23,8 @@
     "commander": "^6.2.0",
     "cosmiconfig": "^7.0.0",
     "fs-extra": "^9.0.1",
-    "globby": "^11.0.1"
+    "globby": "^11.0.1",
+    "lodash.isequal": "^4.5.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^11.0.0",

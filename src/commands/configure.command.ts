@@ -9,7 +9,12 @@ export interface ConfigureCommandOptions {
 
 export class ConfigureCommand implements Command {
 	async execute(options: ConfigureCommandOptions): Promise<void> {
-		await kms.create(options.key, options.region);
+		project.configure(options.region, options.key);
+
+		if (!(await kms.getKeyId())) {
+			await kms.create(project.key);
+		}
+
 		project.saveConfiguration();
 	}
 }

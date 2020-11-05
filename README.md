@@ -1,6 +1,6 @@
 # Muna
 
-Seamless encryption of secret files in git.
+Seamless file encryption with AWS KMS.
 
 # Getting started
 

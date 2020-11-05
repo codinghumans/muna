@@ -15,7 +15,7 @@ Creating kms alias...
 Creating muna.config.json...
 ```
 
-If there is any existing KMS key associated with the alias, muna will try will use it. Otherwise, it will try to create a new one.
+If there is any existing KMS key associated with the alias, muna will try will use it. Otherwise, muna will simply try to create a new key.
 
 ## Encrypting files
 

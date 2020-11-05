@@ -1,6 +1,6 @@
 {
   "name": "@codinghumans/muna",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "Seamless file encryption with AWS KMS.",
   "homepage": "https://github.com/codinghumans/muna#readme",
   "author": "Marc Marcet",

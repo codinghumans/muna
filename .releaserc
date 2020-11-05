@@ -7,12 +7,13 @@
     ["@semantic-release/changelog", {
       "changelogFile": "CHANGELOG"
     }],
-    "@semantic-release/github",
-    "@semantic-release/npm",
     ["@semantic-release/git", {
-      "assets": ["CHANGELOG", "package.json"],
+      "assets": ["CHANGELOG", "package.json", "package-lock.json"],
       "message": "chore(release): cut the ${nextRelease.version} release [skip ci]"
     }],
+    "@semantic-release/github",
+    "@semantic-release/npm",
+
   ]
 }
 

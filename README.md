@@ -1,7 +1,7 @@
 
 # Muna
 
-Muna is a very simple command line interface (cli) that provides fast and secure file encryption. It relies on (AWS KMS)(https://aws.amazon.com/en/kms) to store your encryption keys, removing the complexities of having to manage, secure, and rotate your encryption keys manually, while at the same time, also making them easily available from anywhere.
+Muna is a very simple command line interface (cli) that provides fast and secure file encryption. It relies on [AWS KMS](https://aws.amazon.com/en/kms) to store your encryption keys, removing the complexities of having to manage, secure, and rotate your encryption keys manually, while at the same time, also making them easily available from anywhere.
 
 ## Getting Started
 

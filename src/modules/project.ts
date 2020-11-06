@@ -7,88 +7,88 @@ import fs from './fs';
 export const Configfile = 'muna.config.json';
 
 export interface Configuration {
-	aws?: { region?: string; kms?: { key?: string } };
+    aws?: { region?: string; kms?: { key?: string } };
 }
 
 class Project {
-	#config?: Configuration;
+    #config?: Configuration;
 
-	get config(): Configuration {
-		if (!this.#config) {
-			const result = cosmiconfigSync('muna').search();
-			this.#config = result?.config || {};
-		}
+    get config(): Configuration {
+        if (!this.#config) {
+            const result = cosmiconfigSync('muna').search();
+            this.#config = result?.config || {};
+        }
 
-		return this.#config!;
-	}
+        return this.#config!;
+    }
 
-	get region(): string {
-		const region = this.config.aws?.region;
+    get region(): string {
+        const region = this.config.aws?.region;
 
-		if (!region) {
-			throw new ConfigurationError('aws.region not defined.');
-		}
+        if (!region) {
+            throw new ConfigurationError('aws.region not defined.');
+        }
 
-		return region;
-	}
+        return region;
+    }
 
-	set region(region: string) {
-		if (!this.config.aws) this.config.aws = {};
-		this.config.aws.region = region;
-	}
+    set region(region: string) {
+        if (!this.config.aws) this.config.aws = {};
+        this.config.aws.region = region;
+    }
 
-	get key(): string {
-		const key = this.config.aws?.kms?.key;
+    get key(): string {
+        const key = this.config.aws?.kms?.key;
 
-		if (!key) {
-			throw new ConfigurationError('aws.kms.key not defined.');
-		}
+        if (!key) {
+            throw new ConfigurationError('aws.kms.key not defined.');
+        }
 
-		return key;
-	}
+        return key;
+    }
 
-	set key(key: string) {
-		if (!this.config.aws) this.config.aws = {};
-		if (!this.config.aws.kms) this.config.aws.kms = {};
-		this.config.aws.kms.key = key;
-	}
+    set key(key: string) {
+        if (!this.config.aws) this.config.aws = {};
+        if (!this.config.aws.kms) this.config.aws.kms = {};
+        this.config.aws.kms.key = key;
+    }
 
-	configure(region: string, key: string) {
-		this.region = region;
-		this.key = key;
-	}
+    configure(region: string, key: string) {
+        this.region = region;
+        this.key = key;
+    }
 
-	saveConfiguration() {
-		if (!isEqual(this.config, fs.readJSON(Configfile))) {
-			console.log(`${!fs.exists(Configfile) ? 'Creating' : 'Updating'} ${Configfile}...`);
-			fs.writeJSON(Configfile, this.config);
-		}
-	}
+    saveConfiguration() {
+        if (!isEqual(this.config, fs.readJSON(Configfile))) {
+            console.log(`${!fs.exists(Configfile) ? 'Creating' : 'Updating'} ${Configfile}...`);
+            fs.writeJSON(Configfile, this.config);
+        }
+    }
 
-	getFileSnapshotPath(file: string): string {
-		return path.join(path.dirname(file), '.muna', 'snapshot', path.basename(file));
-	}
+    getFileSnapshotPath(file: string): string {
+        return path.join(path.dirname(file), '.muna', 'snapshot', path.basename(file));
+    }
 
-	createFileSnapshot(file: string) {
-		fs.copy(file, this.getFileSnapshotPath(file));
-	}
+    createFileSnapshot(file: string) {
+        fs.copy(file, this.getFileSnapshotPath(file));
+    }
 
-	diff(files: string[]): boolean {
-		let changes = false;
+    diff(files: string[]): boolean {
+        let changes = false;
 
-		files.forEach((file) => {
-			const snapshot = this.getFileSnapshotPath(file);
+        files.forEach((file) => {
+            const snapshot = this.getFileSnapshotPath(file);
 
-			fs.touch(snapshot);
+            fs.touch(snapshot);
 
-			if (!fs.equals(snapshot, file)) {
-				fs.diff(snapshot, file);
-				changes = true;
-			}
-		});
+            if (!fs.equals(snapshot, file)) {
+                fs.diff(snapshot, file);
+                changes = true;
+            }
+        });
 
-		return changes;
-	}
+        return changes;
+    }
 }
 
 export default new Project();

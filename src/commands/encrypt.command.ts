@@ -5,21 +5,21 @@ import kms from '../modules/kms';
 import BaseCommand from './base.command';
 
 export interface EncryptCommandOptions {
-	path: string;
+    path: string;
 }
 
 export class EncryptCommand implements BaseCommand {
-	async execute(options: EncryptCommandOptions): Promise<any> {
-		const decryptedFiles = await globby([options.path.split(path.sep).join('/'), '!**/*.enc']);
+    async execute(options: EncryptCommandOptions): Promise<any> {
+        const decryptedFiles = await globby([options.path.split(path.sep).join('/'), '!**/*.enc']);
 
-		const keyId = await kms.getKeyId();
+        const keyId = await kms.getKeyId();
 
-		if (!keyId) {
-			throw new KMSError('Key not found.');
-		}
+        if (!keyId) {
+            throw new KMSError('Key not found.');
+        }
 
-		for (let decryptedFile of decryptedFiles) {
-			await kms.encryptFile(decryptedFile, keyId);
-		}
-	}
+        for (let decryptedFile of decryptedFiles) {
+            await kms.encryptFile(decryptedFile, keyId);
+        }
+    }
 }

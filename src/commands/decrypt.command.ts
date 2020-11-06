@@ -11,13 +11,13 @@ export interface DecryptCommandOptions {
 
 export class DecryptCommand implements BaseCommand {
     async execute(options: DecryptCommandOptions): Promise<any> {
-        const encryptedFiles = await globby([options.path.split(path.sep).join('/')]);
-
         const keyId = await kms.getKeyId();
 
         if (!keyId) {
             throw new KMSError('Key not found.');
         }
+
+        const encryptedFiles = await globby([options.path.split(path.sep).join('/')]);
 
         for (let encryptedFile of encryptedFiles) {
             const decryptedFile = await kms.decryptFile(encryptedFile, keyId);

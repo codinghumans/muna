@@ -1,5 +1,5 @@
 export class KMSError extends Error {
-	constructor(message: string) {
-		super(`KMS Error: ${message}`);
-	}
+    constructor(message: string) {
+        super(`KMS Error: ${message}`);
+    }
 }

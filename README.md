@@ -1,4 +1,3 @@
-
 # Muna
 
 Muna is a very simple command line interface (cli) that provides fast and secure file encryption. It relies on [AWS KMS](https://aws.amazon.com/en/kms) to store your encryption keys, making them easily available from anywhere and removing the complexities of having to manage, secure, and rotate them manually.
@@ -36,6 +35,7 @@ Creating kms key...
 Creating kms alias...
 Creating muna.config.json...
 ```
+
 If the alias is already associated with a key, Muna will use the existing key. Otherwise, it will create a new key and then will associate the alias to it.
 
 ## Usage
@@ -61,10 +61,3 @@ $ muna diff **/*.json
 ## License
 
 Distributed under the MIT License. See [LICENSE](LICENSE) for more information.
-
-
-
-
-
-
-

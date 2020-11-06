@@ -1,62 +1,62 @@
 {
-    "name": "@codinghumans/muna",
-    "version": "1.0.6",
-    "description": "Seamless file encryption with AWS KMS.",
-    "homepage": "https://github.com/codinghumans/muna#readme",
-    "author": "Marc Marcet",
-    "license": "MIT",
-    "public": true,
-    "main": "./bin/muna.js",
-    "files": [
-        "dist/*",
-        "bin/muna.js"
-    ],
-    "bin": {
-        "muna": "bin/muna.js"
-    },
-    "scripts": {
-        "build": "tsc -p .",
-        "watch": "tsc -p . --watch",
-        "release": "./node_modules/.bin/semantic-release && git reset --hard"
-    },
-    "dependencies": {
-        "aws-sdk": "^2.778.0",
-        "chalk": "^4.1.0",
-        "commander": "^6.2.0",
-        "cosmiconfig": "^7.0.0",
-        "fs-extra": "^9.0.1",
-        "globby": "^11.0.1",
-        "lodash.isequal": "^4.5.0"
-    },
-    "devDependencies": {
-        "@commitlint/cli": "^11.0.0",
-        "@commitlint/config-conventional": "^11.0.0",
-        "@semantic-release/changelog": "^5.0.1",
-        "@semantic-release/git": "^9.0.0",
-        "@types/chalk": "^2.2.0",
-        "@types/cosmiconfig": "^6.0.0",
-        "@types/fs-extra": "^9.0.2",
-        "@types/lodash.isequal": "^4.5.5",
-        "@types/node": "^14.14.2",
-        "husky": "^4.3.0",
-        "semantic-release": "^17.2.2",
-        "typescript": "^4.0.3"
-    },
-    "husky": {
-        "hooks": {
-            "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-        }
-    },
-    "commitlint": {
-        "extends": [
-            "@commitlint/config-conventional"
-        ]
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/codinghumans/muna.git"
-    },
-    "bugs": {
-        "url": "https://github.com/codinghumans/muna/issues"
+  "name": "@codinghumans/muna",
+  "version": "1.0.6",
+  "description": "Seamless file encryption with AWS KMS.",
+  "homepage": "https://github.com/codinghumans/muna#readme",
+  "author": "Marc Marcet",
+  "license": "MIT",
+  "public": true,
+  "main": "./bin/muna.js",
+  "files": [
+    "dist/*",
+    "bin/muna.js"
+  ],
+  "bin": {
+    "muna": "bin/muna.js"
+  },
+  "scripts": {
+    "build": "tsc -p .",
+    "watch": "tsc -p . --watch",
+    "release": "./node_modules/.bin/semantic-release && git reset --hard"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.778.0",
+    "chalk": "^4.1.0",
+    "commander": "^6.2.0",
+    "cosmiconfig": "^7.0.0",
+    "fs-extra": "^9.0.1",
+    "globby": "^11.0.1",
+    "lodash.isequal": "^4.5.0"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^11.0.0",
+    "@commitlint/config-conventional": "^11.0.0",
+    "@semantic-release/changelog": "^5.0.1",
+    "@semantic-release/git": "^9.0.0",
+    "@types/chalk": "^2.2.0",
+    "@types/cosmiconfig": "^6.0.0",
+    "@types/fs-extra": "^9.0.2",
+    "@types/lodash.isequal": "^4.5.5",
+    "@types/node": "^14.14.2",
+    "husky": "^4.3.0",
+    "semantic-release": "^17.2.2",
+    "typescript": "^4.0.3"
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/codinghumans/muna.git"
+  },
+  "bugs": {
+    "url": "https://github.com/codinghumans/muna/issues"
+  }
 }

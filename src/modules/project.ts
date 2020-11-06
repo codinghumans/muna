@@ -4,7 +4,7 @@ import path from 'path';
 import { ConfigurationError } from '../errors/configuration.error';
 import fs from './fs';
 
-export const Configfile = 'muna.config.json';
+export const Configfile = '.munarc.json';
 
 export interface Configuration {
     aws?: { region?: string; kms?: { key?: string } };
@@ -59,7 +59,7 @@ class Project {
     }
 
     saveConfiguration() {
-        if (!isEqual(this.config, fs.readJSON(Configfile))) {
+        if (!fs.exists(Configfile) || !isEqual(this.config, fs.readJSON(Configfile))) {
             console.log(`${!fs.exists(Configfile) ? 'Creating' : 'Updating'} ${Configfile}...`);
             fs.writeJSON(Configfile, this.config);
         }
